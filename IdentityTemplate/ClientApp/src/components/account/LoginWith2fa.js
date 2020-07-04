@@ -1,5 +1,5 @@
 ﻿import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import UserContext from '../../auth/user';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
@@ -7,7 +7,8 @@ import { useAccount } from './useAccount';
 
 const LoginWith2fa = props => {
 
-    const { location, history } = props;
+    const history = useHistory();
+    const location = useLocation();
 
     const { getSignedInUser } = useContext(UserContext);
 

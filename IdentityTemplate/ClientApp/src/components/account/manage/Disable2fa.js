@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
 import { useAccount } from '../useAccount';
@@ -7,22 +7,35 @@ import { StatusMessage, useStatusMessage } from '../statusMessage';
 
 const Disable2fa = props => {
 
-    const { history } = props;
+    const history = useHistory();
 
-    const { TwoFactorEnabled } = useAccount();
+    const { TwoFactorEnabled, Disable2fa } = useAccount();
 
     const [setMessage, statMsgConnector] = useStatusMessage();
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        Disable2fa(model)
+            .then(resp => {
+                if (!!resp && !!resp.pathname) {
+                    history.push(resp);
+                }
+                else {
+                    console.log('Model State Errors:');
+                    console.log(resp);
+                }
+            });
+
     };
 
-    useEffect(async () => {
+    useEffect(() => {
 
-        let enabled = await TwoFactorEnabled();
-        if (!enabled) history.push("/Account/Manage/TwoFactorAuthentication");
-
+        TwoFactorEnabled()
+            .then(enabled => {
+                if (!enabled) history.push("/Account/Manage/TwoFactorAuthentication");
+            });
+        
     }, []);
 
     return (

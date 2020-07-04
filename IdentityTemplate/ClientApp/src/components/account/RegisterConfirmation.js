@@ -1,10 +1,12 @@
 ﻿import React from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 
 const RegisterConfirmation = props => {
 
-    const { location, history } = props;
-
+    const location = useLocation();
+    const history = useHistory();
+        
     if (!!location.state) {
 
         const { email, emailConfirmationUrl } = location.state;

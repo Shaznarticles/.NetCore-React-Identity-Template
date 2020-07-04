@@ -8,9 +8,17 @@ namespace IdentityTemplate.Identity.Models
     public class RedirectResponse
     {
         public string Pathname { get; set; }
-
-        public IRedirectState State { get; set; }
     }
 
-    public interface IRedirectState { }    
+    public class RedirectStatusResponse
+    {
+        public string Pathname { get; set; }
+
+        public RedirectStatusState State { get; set; }
+    }
+
+    public class RedirectStatusState
+    {
+        public StatusResponse Status { get; set; }
+    }
 }

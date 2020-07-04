@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
 import UserContext from '../../../auth/user';
@@ -7,7 +7,7 @@ import { useAccount } from '../useAccount';
 
 const DeletePersonalData = props => {
 
-    const { history } = props;
+    const history = useHistory();
 
     const { getSignedInUser } = useContext(UserContext);
 

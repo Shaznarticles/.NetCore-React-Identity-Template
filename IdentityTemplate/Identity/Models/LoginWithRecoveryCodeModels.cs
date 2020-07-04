@@ -16,5 +16,5 @@ namespace IdentityTemplate.Identity.Models
         public string RecoveryCode { get; set; }
 
         public string ReturnUrl { get; set; }
-    }
+    }        
 }

@@ -63,10 +63,10 @@ namespace IdentityTemplate.Controllers
 
             return Redirect("/Account/ConfirmEmail");
 
-            //return Ok(new ConfirmEmailResponse()
+            //return Ok(new RedirectStatusResponse()
             //{
             //    Pathname = "/Account/ConfirmEmail",
-            //    State = new ConfirmEmailResponseState()
+            //    State = new RedirectStatusState()
             //    {
             //        Status = statusMessage
             //    }
@@ -133,7 +133,7 @@ namespace IdentityTemplate.Controllers
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return Ok(new RedirectResponse()
+                    return Ok(new LoginResponse()
                     {
                         Pathname = "/Account/LoginWith2fa",
                         State = new LoginResponseState()
@@ -188,7 +188,7 @@ namespace IdentityTemplate.Controllers
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return Ok(new RedirectResponse()
+                        var res = Ok(new RegisterResponse()
                         {
                             Pathname = "/Account/RegisterConfirmation",
                             State = new RegisterResponseState()
@@ -198,6 +198,8 @@ namespace IdentityTemplate.Controllers
                                 EmailConfirmationUrl = callbackUrl
                             }
                         });
+
+                        return res;
                     }
                     else
                     {
@@ -798,7 +800,7 @@ namespace IdentityTemplate.Controllers
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("IdentityTemplate"),
+                _urlEncoder.Encode("Identity Template"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
@@ -840,7 +842,7 @@ namespace IdentityTemplate.Controllers
             {
                 var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
 
-                return Ok(new RedirectResponse()
+                return Ok(new Verify2FACodeResponse()
                 {
                     Pathname = "/Account/Manage/ShowRecoveryCodes",
                     State = new Verify2FACodeRedirectState()
@@ -855,7 +857,7 @@ namespace IdentityTemplate.Controllers
             }
             else
             {
-                return Ok(new RedirectResponse()
+                return Ok(new Verify2FACodeResponse()
                 {
                     Pathname = "/Account/Manage/TwoFactorAuthentication",
                     State = new Verify2FACodeRedirectState()
@@ -867,6 +869,99 @@ namespace IdentityTemplate.Controllers
                     }
                 });
             }
+        }
+
+        [HttpPost("ResetAuthenticator")]
+        public async Task<IActionResult> ResetAuthenticator()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            await _userManager.SetTwoFactorEnabledAsync(user, false);
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+            _logger.LogInformation("User with ID '{UserId}' has reset their authentication app key.", user.Id);
+
+            await _signInManager.RefreshSignInAsync(user);
+
+            return Ok(new RedirectStatusResponse()
+            {
+                Pathname = "/Account/Manage/EnableAuthenticator",
+                State = new RedirectStatusState()
+                {
+                    Status = new StatusResponse(){
+                        Status = "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key."
+                    }
+                }
+            });
+        }
+
+        [HttpPost("GenerateRecoveryCodes")]
+        public async Task<IActionResult> GenerateRecoveryCodes()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
+            var userId = await _userManager.GetUserIdAsync(user);
+            if (!isTwoFactorEnabled)
+            {
+                throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' as they do not have 2FA enabled.");
+            }
+
+            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+
+            _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);
+
+            return Ok(new Verify2FACodeResponse()
+            {
+                Pathname = "/Account/Manage/ShowRecoveryCodes",
+                State = new Verify2FACodeRedirectState()
+                {
+                    Status = new StatusResponse()
+                    {
+                        Status = "You have generated new recovery codes."
+                    },
+                    RecoveryCodes = recoveryCodes.ToArray()
+                }
+            });
+        }
+
+        [HttpPost("Disable2fa")]
+        public async Task<IActionResult> Disable2fa()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            if (!disable2faResult.Succeeded)
+            {
+                throw new InvalidOperationException($"Unexpected error occurred disabling 2FA for user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            _logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", _userManager.GetUserId(User));
+
+            var statusMessage = "2fa has been disabled. You can reenable 2fa when you setup an authenticator app";
+
+            return Ok(new RedirectStatusResponse()
+            {
+                Pathname = "/Account/Manage/TwoFactorAuthentication",
+                State = new RedirectStatusState()
+                {
+                    Status = new StatusResponse()
+                    {
+                        Status = statusMessage
+                    }
+                }
+            });
         }
     }
 }

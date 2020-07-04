@@ -1,12 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
 const Register = props => {
 
-    const { location, history } = props;
+    const location = useLocation();
+    const history = useHistory();
 
     const { GetExternalLogins, Register } = useAccount();
 

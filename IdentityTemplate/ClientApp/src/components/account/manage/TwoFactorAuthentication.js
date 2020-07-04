@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Form, Button, FormGroup } from 'reactstrap';
 import { useAccount } from '../useAccount';
 
@@ -13,11 +13,15 @@ const CodesLeftAlert = (props) => {
 
     useEffect(() => {
 
-        RecoveryCodesLeft()
-            .then(resp => {
-                setGotCodes(true);
-                setCodesLeft(resp);
-            });
+        const getCodesLeft = () => {
+            RecoveryCodesLeft()
+                .then(resp => {
+                    setGotCodes(true);
+                    setCodesLeft(resp);
+                });
+        }
+
+        getCodesLeft();
 
     }, []);
 
@@ -53,7 +57,7 @@ const CodesLeftAlert = (props) => {
 
 const TwoFactorAuthentication = props => {
 
-    const { location } = props;
+    const location = useLocation();
         
     const [is2faEnabled, setIs2faEnabled] = useState(false);
     const [isMachineRemembered, setIsMachineRemembered] = useState(false);
@@ -114,19 +118,19 @@ const TwoFactorAuthentication = props => {
                                 <Button color="secondary" onClick={forgetBrowser}>Forget this browser</Button>
                             </FormGroup>
                         )}
-                    <Link to="/Account/Manage/Disable2fa" className="btn btn-default">Disable 2FA</Link>
-                    <Link to="/Account/Manage/GenerateRecoveryCodes" className="btn btn-default">Reset recovery codes</Link>
+                    <Link to="/Account/Manage/Disable2fa" className="btn btn-secondary mr-2">Disable 2FA</Link>
+                    <Link to="/Account/Manage/GenerateRecoveryCodes" className="btn btn-secondary ml-2">Reset recovery codes</Link>
                 </>
             )}
 
-            <h5>Authenticator app</h5>
+            <h5 className='mt-3'>Authenticator app</h5>
             {(!hasAuthenticator) ?
                 (
-                    <Link to="/Account/Manage/EnableAuthenticator" className="btn btn-default">Add authenticator app</Link>
+                    <Link to="/Account/Manage/EnableAuthenticator" className="btn btn-secondary">Add authenticator app</Link>
                 ) : (
                     <>
-                        <Link to="/Account/Manage/EnableAuthenticator" className="btn btn-default">Setup authenticator app</Link>
-                        <Link to="/Account/Manage/ResetAuthenticator" className="btn btn-default">Reset authenticator app</Link>
+                        <Link to="/Account/Manage/EnableAuthenticator" className='btn btn-secondary mr-2'>Setup authenticator app</Link>
+                        <Link to="/Account/Manage/ResetAuthenticator" className="btn btn-secondary ml-2">Reset authenticator app</Link>
                     </>
                 )}
         </>

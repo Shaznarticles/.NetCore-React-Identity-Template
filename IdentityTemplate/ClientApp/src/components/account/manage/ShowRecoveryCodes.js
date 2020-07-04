@@ -2,10 +2,11 @@
 import { StatusMessage, useStatusMessage } from '../statusMessage';
 import { Row, Col } from 'reactstrap';
 import { useAccount } from '../useAccount';
+import { useLocation } from 'react-router-dom';
 
 const ShowRecoveryCodes = props => {
 
-    const { location } = props;
+    const location = useLocation();
 
     const [setMessage, statMsgConnector] = useStatusMessage();
 
@@ -13,21 +14,20 @@ const ShowRecoveryCodes = props => {
 
     useEffect(() => {
 
-        const setStatusAndCodes = () => {
             if (!!location.state) {
+                console.log('state?');
+                console.log(location.state);
                 const status = location.state.status || null;
                 const codes = location.state.recoveryCodes || [];
                 if (!!status) {
                     setMessage(status.status, status.alertColor, 10000);
-                    console.log(codes);
+                    console.log(codes || 'no codes');
                     setRecoveryCodes(codes);
                 }
             }
-        };
 
-        setStatusAndCodes();
 
-    }, []);
+    }, [location.state]);
 
     return (
         <>
@@ -43,7 +43,7 @@ const ShowRecoveryCodes = props => {
             </div>
             <Row>
                 <Col md={12}>
-                    {recoveryCodes.map(code => {
+                    {!!recoveryCodes && recoveryCodes.map(code => {
                         return (
                             <>
                                 <code className="recovery-code">{code}</code>

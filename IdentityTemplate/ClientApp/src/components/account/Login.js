@@ -1,13 +1,14 @@
 ﻿import React, { useState, useEffect, useContext } from 'react';
 import UserContext from '../../auth/user';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
 const Login = props => {
 
-    const { location, history } = props;
+    const history = useHistory();
+    const location = useLocation();
 
     const { getSignedInUser } = useContext(UserContext);
 

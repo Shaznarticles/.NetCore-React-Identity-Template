@@ -1,12 +1,12 @@
 ﻿import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { NavItem, NavLink } from 'reactstrap';
 import UserContext from '../../auth/user';
 import { useAccount } from './useAccount';
 
 const LoginPartial = props => {
 
-    const { history } = props;
+    const history = useHistory();
     const { userConfig, getSignedInUser } = useContext(UserContext);
     const { Logout } = useAccount();
 

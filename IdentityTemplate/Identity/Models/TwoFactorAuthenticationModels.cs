@@ -22,10 +22,18 @@ namespace IdentityTemplate.Identity.Models
         public string AuthenticatorUri { get; set; }
     }
 
-    public class Verify2FACodeRedirectState:IRedirectState
+    public class Verify2FACodeResponse
+    {
+        public string Pathname { get; set; }
+
+        public Verify2FACodeRedirectState State { get; set; }
+    }
+
+    public class Verify2FACodeRedirectState
     {
         public StatusResponse Status { get; set; }
 
         public string[] RecoveryCodes { get; set; }
     }
+        
 }

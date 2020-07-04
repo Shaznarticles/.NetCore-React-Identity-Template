@@ -23,7 +23,13 @@ namespace IdentityTemplate.Identity.Models
         public string ReturnUrl { get; set; }
     }
 
-    public class LoginResponseState:IRedirectState
+    public class LoginResponse
+    {
+        public string Pathname { get; set; }
+        public LoginResponseState State { get; set; }
+    }
+
+    public class LoginResponseState
     {
         public string ReturnUrl { get; set; }
 

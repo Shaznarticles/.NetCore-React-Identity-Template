@@ -28,7 +28,13 @@ namespace IdentityTemplate.Identity.Models
         public string ReturnUrl { get; set; }
     }
 
-    public class RegisterResponseState: IRedirectState
+    public class RegisterResponse
+    {
+        public string Pathname { get; set; }
+        public RegisterResponseState State { get; set; }
+    }
+
+    public class RegisterResponseState
     {
         public string ReturnUrl { get; set; }
 

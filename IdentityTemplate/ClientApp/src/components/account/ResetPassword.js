@@ -2,6 +2,7 @@
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
+import { useLocation, useHistory } from 'react-router-dom';
 
 const getQueryObject = () => {
     let queryObj = {};
@@ -18,7 +19,8 @@ const getQueryObject = () => {
 
 const ResetPassword = props => {
 
-    const { history, location } = props;
+    const location = useLocation();
+    const history = useHistory();
 
     const code = getQueryObject().code;
 

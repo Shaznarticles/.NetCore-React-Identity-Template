@@ -1,12 +1,14 @@
 ﻿import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useForm } from '../../../utils/useForm';
 import { useAccount } from '../useAccount';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
 import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button } from 'reactstrap';
+import QRCode from 'qrcode.react';
 
 const EnableAuthenticator = props => {
 
-    const { history } = props;
+    const history = useHistory();
 
     const { LoadSharedKeyAndQRCodeUri, Verify2FACode } = useAccount();
 
@@ -66,6 +68,7 @@ const EnableAuthenticator = props => {
                     <li>
                         <p>Scan the QR Code or enter this key <kbd>{sharedKey}</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
                         <div className="alert alert-info">Learn how to <a href="https://go.microsoft.com/fwlink/?Linkid=852423">enable QR code generation</a>.</div>
+                        <QRCode value={authenticatorUri} />
                         <div id="qrCode"></div>
                         <div id="qrCodeData" data-url={authenticatorUri}></div>
                     </li>
@@ -95,3 +98,20 @@ const EnableAuthenticator = props => {
 };
 
 export default EnableAuthenticator;
+
+//
+//ISC License
+
+//Copyright(c) 2015, Paul O’Shannessy
+
+//Permission to use, copy, modify, and / or distribute this software for any
+//purpose with or without fee is hereby granted, provided that the above
+//copyright notice and this permission notice appear in all copies.
+
+//THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+//REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+//FITNESS.IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+//    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+//LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+//OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+//PERFORMANCE OF THIS SOFTWARE.

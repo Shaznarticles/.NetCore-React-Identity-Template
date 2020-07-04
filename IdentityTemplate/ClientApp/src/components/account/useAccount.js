@@ -259,6 +259,36 @@ export const useAccount = () => {
         });
     };
 
+    const ResetAuthenticator = async () => {
+        return new Promise((resolve, reject) => {
+            Api.post('api/Account/ResetAuthenticator', {})
+                .then(resp => {
+                    resolve(resp.data);
+                })
+                .catch(err => reject(err));
+        });
+    };
+
+    const GenerateRecoveryCodes = async () => {
+        return new Promise((resolve, reject) => {
+            Api.post('api/Account/GenerateRecoveryCodes', {})
+                .then(resp => {
+                    resolve(resp.data);
+                })
+                .catch(err => reject(err));
+        });
+    };
+
+    const Disable2fa = async () => {
+        return new Promise((resolve, reject) => {
+            Api.post('api/Account/Disable2fa', {})
+                .then(resp => {
+                    resolve(resp.data);
+                })
+                .catch(err => reject(err));
+        });
+    };
+
 
     return {
         GetExternalLogins, HasPassword, Register, Login,
@@ -267,6 +297,7 @@ export const useAccount = () => {
         ForgotPassword, LoginWith2fa, LoginWithRecoveryCode,
         ResendEmailConfirmation, ResetPassword, DeletePersonalData,
         TwoFactorEnabled, HasAuthenticator, IsMachineRemembered, RecoveryCodesLeft,
-        ForgetBrowser, LoadSharedKeyAndQRCodeUri, Verify2FACode
+        ForgetBrowser, LoadSharedKeyAndQRCodeUri, Verify2FACode, ResetAuthenticator,
+        GenerateRecoveryCodes, Disable2fa
     };
 };

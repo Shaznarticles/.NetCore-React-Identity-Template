@@ -1,9 +1,10 @@
 ﻿import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Row, Col, FormGroup } from 'reactstrap';
 
 const PersonalData = props => {
 
-    const { history } = props;
+    const history = useHistory();
 
     const download = () => {
 

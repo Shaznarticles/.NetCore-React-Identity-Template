@@ -10,8 +10,4 @@ namespace IdentityTemplate.Identity.Models
         public string ReturnUrl { get; set; }
     }
 
-    public class LogoutResponseState: IRedirectState
-    {
-        public string ReturnUrl { get; set; }
-    }
 }

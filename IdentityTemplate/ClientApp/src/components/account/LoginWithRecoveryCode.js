@@ -1,4 +1,5 @@
 ﻿import React, { useContext } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import UserContext from '../../auth/user';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
@@ -7,7 +8,8 @@ import { useAccount } from './useAccount';
 
 const LoginWithRecoveryCode = props => {
 
-    const { location, history } = props;
+    const location = useLocation();
+    const history = useHistory();
 
     const { getSignedInUser } = useContext(UserContext);
 

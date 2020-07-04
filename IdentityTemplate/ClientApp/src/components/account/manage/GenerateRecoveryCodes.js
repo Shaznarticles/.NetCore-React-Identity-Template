@@ -1,15 +1,42 @@
-﻿import React from 'react';
+﻿import React, { useEffect } from 'react';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Form, FormGroup, Button } from 'reactstrap';
+import { useAccount } from '../useAccount';
 
 const GenerateRecoveryCodes = props => {
 
+    const history = useHistory();
+
     const [setMessage, statMsgConnector] = useStatusMessage();
 
-    const generateCodes = () => {
+    const { GenerateRecoveryCodes, TwoFactorEnabled } = useAccount();
 
+    const generateCodes = () => {
+        GenerateRecoveryCodes()
+            .then(resp => {
+                if (!!resp && !!resp.pathname) {
+                    //console.log(resp);
+                    history.push(resp);
+                }
+                else if (!!resp && !!resp.status) {
+                    setMessage(resp.status, resp.alertColor);
+                }
+                else {
+                    console.log('Model State Errors:');
+                    console.log(resp);
+                }
+            });
     };
+
+    useEffect(() => {
+
+        TwoFactorEnabled()
+            .then(enabled => {
+                if (!enabled) history.push("/Account/Manage/TwoFactorAuthentication");
+            });
+
+    }, []);
 
     return (
         <>

@@ -1,11 +1,12 @@
 ﻿import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
 const ForgotPassword = props => {
 
-    const { history } = props;
+    const history = useHistory();
 
     const initModel = {
         email: ''
