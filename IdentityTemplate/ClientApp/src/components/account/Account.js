@@ -2,6 +2,7 @@
 import { Route } from 'react-router';
 import * as Acct from './';
 import Manage from './manage';
+import AuthorizedRoute from '../../AuthorizedRoute';
 
 const Account = () => {
 
@@ -21,8 +22,8 @@ const Account = () => {
             <Route exact path='/Account/LoginWith2fa' component={Acct.LoginWith2fa} />
             <Route exact path='/Account/LoginWithRecoveryCode' component={Acct.LoginWithRecoveryCode} />
             <Route exact path='/Account/ResendEmailConfirmation' component={Acct.ResendEmailConfirmation} />
-            <Route path='/Account/ResetPassword' component={Acct.ResetPassword} />
-            <Route exact path='/Account/ResetPasswordConfirmation' component={Acct.ResetPasswordConfirmation} />
+            <AuthorizedRoute exact path='/Account/ResetPassword' component={Acct.ResetPassword} />
+            <AuthorizedRoute exact path='/Account/ResetPasswordConfirmation' component={Acct.ResetPasswordConfirmation} />
         </>
     );
 };

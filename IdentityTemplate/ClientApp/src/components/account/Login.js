@@ -17,7 +17,7 @@ const Login = props => {
     const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
 
     const [externalLogins, setExternalLogins] = useState([]);
-        
+
     const initModel = {
         email: '',
         password: '',
@@ -42,6 +42,11 @@ const Login = props => {
                     console.log(resp);
                 }
             });
+    };
+
+    const externalLogin = (displayName) => {
+
+        history.push({ pathname: '/Account/ExternalLogin', state: { returnUrl, providerDisplayName: displayName } })
     };
 
     useEffect(() => {
@@ -74,7 +79,7 @@ const Login = props => {
                             <FormGroup>
                                 <Label for="password">Password</Label>
                                 <Input type="password" name="password" value={model.password} onChange={onPropChanged} />
-                            </FormGroup>                               
+                            </FormGroup>
                             <FormGroup check>
                                 <Label check>
                                     <Input type="checkbox" name="rememberMe" checked={model.rememberMe} onChange={onCheckChanged} />{' '}Remember me?
@@ -103,18 +108,16 @@ const Login = props => {
                         <hr />
                         {(!!externalLogins && externalLogins.length > 0) ?
                             (
-                                <Form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                                    <div>
-                                        <p>
-                                            {externalLogins.map(xLog =>
-                                                (
-                                                    <Button color="primary" value={xLog.Name} title={`Log in using your ${xLog.DisplayName} account`}>{xLog.DisplayName}</Button>
-                                                )
-                                            )}
-                                        </p>
-                                    </div>
-                                </Form>
-                                
+                                <div>
+                                    <p>
+                                        {externalLogins.map(xLog =>
+                                            (
+                                                <Button color="primary" value={xLog.Name} onClick={externalLogin(xLog.DisplayName)} title={`Log in using your ${xLog.DisplayName} account`}>{xLog.DisplayName}</Button>
+                                            )
+                                        )}
+                                    </p>
+                                </div>
+
                             ) : (
                                 <div>
                                     <p>

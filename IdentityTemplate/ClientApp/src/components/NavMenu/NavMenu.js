@@ -1,12 +1,15 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext } from 'react';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { LoginPartial } from '../account';
+import UserContext from '../../auth/user';
 import './NavMenu.css';
 
 export const NavMenu = props => {
 
     const [collapsed, setCollapsed] = useState(true);
+
+    const { userConfig } = useContext(UserContext);
 
     const toggleNavbar = () => {
         setCollapsed(!collapsed);
@@ -26,9 +29,11 @@ export const NavMenu = props => {
                             <NavItem>
                                 <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
                             </NavItem>
-                            <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
-                            </NavItem>
+                            {(userConfig.signedIn) && (
+                                <NavItem>
+                                    <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
+                                </NavItem>
+                            )}
                             <LoginPartial />
                         </ul>
                     </Collapse>

@@ -6,6 +6,7 @@ import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
 import Account from './components/account';
+import AuthorizedRoute from './AuthorizedRoute';
 
 import './custom.css'
 
@@ -20,7 +21,7 @@ export const App = props => {
             <Route path='/Account' component={Account} />
 
             <Route path='/counter' component={Counter} />
-            <Route path='/fetch-data' component={FetchData} />
+            <AuthorizedRoute path='/fetch-data' component={FetchData} />
         </Layout>
     );
 }

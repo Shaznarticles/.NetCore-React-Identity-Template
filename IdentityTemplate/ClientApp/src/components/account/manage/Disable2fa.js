@@ -16,7 +16,7 @@ const Disable2fa = props => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        Disable2fa(model)
+        Disable2fa()
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     history.push(resp);

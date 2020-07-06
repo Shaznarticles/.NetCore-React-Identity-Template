@@ -1,10 +1,14 @@
 ﻿import React from 'react';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
+import { useLocation } from 'react-router-dom';
 
 const ExternalLogin = props => {
 
-    const { returnUrl, providerDisplayName } = props;
+    const location = useLocation();
+
+    const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
+    const providerDisplayName = (!!location.state && !!location.state.providerDisplayName) ? location.state.providerDisplayName : '';
 
     const initModel = {
         email: ''

@@ -289,6 +289,10 @@ export const useAccount = () => {
         });
     };
 
+    const DownloadPersonalData = () => {
+        window.location = '/api/Account/DownloadPersonalData';               
+    };
+
 
     return {
         GetExternalLogins, HasPassword, Register, Login,
@@ -298,6 +302,6 @@ export const useAccount = () => {
         ResendEmailConfirmation, ResetPassword, DeletePersonalData,
         TwoFactorEnabled, HasAuthenticator, IsMachineRemembered, RecoveryCodesLeft,
         ForgetBrowser, LoadSharedKeyAndQRCodeUri, Verify2FACode, ResetAuthenticator,
-        GenerateRecoveryCodes, Disable2fa
+        GenerateRecoveryCodes, Disable2fa, DownloadPersonalData
     };
 };

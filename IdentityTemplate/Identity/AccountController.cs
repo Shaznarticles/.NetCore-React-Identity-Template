@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 using IdentityTemplate.Areas.Identity.Data;
 using IdentityTemplate.Identity.Models;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityTemplate.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
@@ -351,7 +353,54 @@ namespace IdentityTemplate.Controllers
             });
         }
 
+        [AllowAnonymous]
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordInput input)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(input.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return Ok(new RedirectResponse()
+                    {
+                        Pathname = "/Account/ForgotPasswordConfirmation"
+                    });
+                }
 
+                // For more information on how to enable account confirmation and password reset please 
+                // visit https://go.microsoft.com/fwlink/?LinkID=532713
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = $"/Account/ResetPassword?code={code}";
+
+                await _emailSender.SendEmailAsync(
+                    input.Email,
+                    "Reset Password",
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                return Ok(new RedirectResponse()
+                {
+                    Pathname = "/Account/ForgotPasswordConfirmation"
+                });
+            }
+
+            return Ok(ModelState);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("SignedInUser")]
+        public async Task<IActionResult> GetSignedInUser()
+        {
+            if (_signInManager.IsSignedIn(User))
+            {
+                var appUser = await _userManager.GetUserAsync(User);
+                return Ok(appUser);
+            }
+
+            return Ok(false);
+        }
 
 
 
@@ -485,42 +534,7 @@ namespace IdentityTemplate.Controllers
                 Status = "Your password has been changed."
             });
         }
-
-        [HttpPost("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordInput input)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(input.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return Ok(new RedirectResponse()
-                    {
-                        Pathname = "/Account/ForgotPasswordConfirmation"
-                    });
-                }
-
-                // For more information on how to enable account confirmation and password reset please 
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = $"/Account/ResetPassword?code={code}";
-
-                await _emailSender.SendEmailAsync(
-                    input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                return Ok(new RedirectResponse()
-                {
-                    Pathname = "/Account/ForgotPasswordConfirmation"
-                });
-            }
-
-            return Ok(ModelState);
-        }
-
+                
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPasswordPost([FromBody]ResetPasswordInput input)
         {
@@ -592,21 +606,7 @@ namespace IdentityTemplate.Controllers
             });
         }
 
-
-
-
-
-        [HttpPost("SignedInUser")]
-        public async Task<IActionResult> GetSignedInUser()
-        {
-            if (_signInManager.IsSignedIn(User))
-            {
-                var appUser = await _userManager.GetUserAsync(User);
-                return Ok(appUser);
-            }
-
-            return Ok(false);
-        }
+        
 
         [HttpPost("EmailConfirmed")]
         public async Task<IActionResult> IsEmailConfirmed()
@@ -962,6 +962,36 @@ namespace IdentityTemplate.Controllers
                     }
                 }
             });
+        }
+
+        [HttpGet("DownloadPersonalData")]
+        public async Task<IActionResult> DownloadPersonalData()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            _logger.LogInformation("User with ID '{UserId}' asked for their personal data.", _userManager.GetUserId(User));
+
+            // Only include personal data for download
+            var personalData = new Dictionary<string, string>();
+            var personalDataProps = typeof(ApplicationUser).GetProperties().Where(
+                            prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
+            foreach (var p in personalDataProps)
+            {
+                personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
+            }
+
+            var logins = await _userManager.GetLoginsAsync(user);
+            foreach (var l in logins)
+            {
+                personalData.Add($"{l.LoginProvider} external login provider key", l.ProviderKey);
+            }
+
+            Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");
+            return new FileContentResult(JsonSerializer.SerializeToUtf8Bytes(personalData), "application/json");
         }
     }
 }
