@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect, useContext } from 'react';
-import UserContext from '../../auth/user';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { StatusMessage, useStatusMessage } from './statusMessage';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
+import UserContext from '../../auth/user';
+import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -11,15 +11,13 @@ const Login = props => {
     const history = useHistory();
     const location = useLocation();
 
+    const returnUrl = !!location.state && location.state.returnUrl || '/';
+
+    const [externalLogins, setExternalLogins] = useState([]);
     const { getSignedInUser } = useContext(UserContext);
 
     const [setMessage, statMsgConnector] = useStatusMessage();
-
     const { GetExternalLogins, Login } = useAccount();
-
-    const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
-
-    const [externalLogins, setExternalLogins] = useState([]);
 
     const initModel = {
         email: '',
@@ -27,15 +25,14 @@ const Login = props => {
         rememberMe: false,
         returnUrl: returnUrl
     };
-
-    const { model, onPropChanged, onCheckChanged, errors, handleErrors, clearErrors } = useForm(initModel);
+    const loginForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        loginForm.clearErrors();
 
-        Login(model)
+        Login(loginForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     getSignedInUser();
@@ -43,7 +40,7 @@ const Login = props => {
                     history.push(resp);
                 }
                 else {                   
-                    handleErrors(resp);
+                    loginForm.handleErrors(resp);
                 }
             });
     };
@@ -55,11 +52,11 @@ const Login = props => {
 
     useEffect(() => {
 
-        if (!!errors.ModelErrors) {
-            setMessage(errors.ModelErrors, 'danger');
+        if (!!loginForm.errors.ModelErrors) {
+            setMessage(loginForm.errors.ModelErrors, 'danger');
         }
 
-    }, [errors.ModelErrors]);
+    }, [loginForm.errors.ModelErrors]);
 
     useEffect(() => {
 
@@ -87,17 +84,17 @@ const Login = props => {
                             <hr />
                             <FormGroup>
                                 <Label for="email">Email</Label>
-                                <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
-                                <FormFeedback>{errors.Email}</FormFeedback>
+                                <Input type="text" name="email" value={loginForm.model.email} invalid={!!loginForm.errors.Email} onChange={loginForm.onPropChanged} />
+                                <FormFeedback>{loginForm.errors.Email}</FormFeedback>
                             </FormGroup>
                             <FormGroup>
                                 <Label for="password">Password</Label>
-                                <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
-                                <FormFeedback>{errors.Password}</FormFeedback>
+                                <Input type="password" name="password" value={loginForm.model.password} invalid={!!loginForm.errors.Password} onChange={loginForm.onPropChanged} />
+                                <FormFeedback>{loginForm.errors.Password}</FormFeedback>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>
-                                    <Input type="checkbox" name="rememberMe" checked={model.rememberMe} onChange={onCheckChanged} />{' '}Remember me?
+                                    <Input type="checkbox" name="rememberMe" checked={loginForm.model.rememberMe} onChange={loginForm.onCheckChanged} />{' '}Remember me?
                                 </Label>
                             </FormGroup>
                             <FormGroup>

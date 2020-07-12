@@ -8,25 +8,25 @@ const ForgotPassword = props => {
 
     const history = useHistory();
 
+    const { ForgotPassword } = useAccount();
+
     const initModel = {
         email: ''
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
-    const { ForgotPassword } = useAccount();
-
+    const emailForm = useForm(initModel);
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        emailForm.clearErrors();
 
-        ForgotPassword(model)
+        ForgotPassword(emailForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     history.push(resp);
                 }
                 else {
-                    handleErrors(resp);
+                    emailForm.handleErrors(resp);
                 }
             });
     };
@@ -41,8 +41,8 @@ const ForgotPassword = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
-                            <FormFeedback>{errors.Email}</FormFeedback>
+                            <Input type="text" name="email" value={emailForm.model.email} invalid={!!emailForm.errors.Email} onChange={emailForm.onPropChanged} />
+                            <FormFeedback>{emailForm.errors.Email}</FormFeedback>
                         </FormGroup>
                         <Button color='primary'>Submit</Button>
                     </Form>

@@ -10,26 +10,23 @@ const DeletePersonalData = props => {
 
     const history = useHistory();
 
+    const [requirePassword, setRequirePassword] = useState(true);
     const { getSignedInUser } = useContext(UserContext);
 
     const [setMessage, statMsgConnector] = useStatusMessage();
-
-    const [requirePassword, setRequirePassword] = useState(true);
-
     const { HasPassword, DeletePersonalData } = useAccount();
 
     const initModel = {
         password: ''
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
+    const pDataForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        pDataForm.clearErrors();
 
-        DeletePersonalData(model)
+        DeletePersonalData(pDataForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     getSignedInUser();
@@ -37,7 +34,7 @@ const DeletePersonalData = props => {
                     history.push(resp);
                 }
                 else {
-                    handleErrors(resp);
+                    pDataForm.handleErrors(resp);
                 }
             });
     };
@@ -53,11 +50,11 @@ const DeletePersonalData = props => {
 
     useEffect(() => {
 
-        if (!!errors.ModelErrors) {
-            setMessage(errors.ModelErrors, 'danger');
+        if (!!pDataForm.errors.ModelErrors) {
+            setMessage(pDataForm.errors.ModelErrors, 'danger');
         }
 
-    }, [errors.ModelErrors]);
+    }, [pDataForm.errors.ModelErrors]);
 
     return (
         <>
@@ -76,8 +73,8 @@ const DeletePersonalData = props => {
                         (
                             <FormGroup>
                                 <Label for="password">Password</Label>
-                                <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
-                                <FormFeedback>{errors.Password}</FormFeedback>
+                            <Input type="password" name="password" value={pDataForm.model.password} invalid={!!pDataForm.errors.Password} onChange={pDataForm.onPropChanged} />
+                            <FormFeedback>{pDataForm.errors.Password}</FormFeedback>
                             </FormGroup>
                         )
                     }

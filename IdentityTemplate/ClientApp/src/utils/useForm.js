@@ -48,7 +48,6 @@ export const useForm = (initObj) => {
 
     const setObject = (object) => {
         dispatchModel({ type: 'setObject', object });
-        setErrorObject(object);
     };
 
     const setErrorObject = (errorModel) => {
@@ -70,20 +69,8 @@ export const useForm = (initObj) => {
     };
 
     const handleErrors = (errModel) => {
-        console.log(errModel);
-
         setErrorObject(errModel);
     };
-
-    useEffect(() => {
-
-        const setInitErrors = () => {
-            setErrorObject(initObj);            
-        };
-
-        setInitErrors();
-
-    }, []);
-
+        
     return { model: modelState, onPropChanged, onCheckChanged, setObject, setModelProperty, errors: errorState, clearErrors, handleErrors };
 };

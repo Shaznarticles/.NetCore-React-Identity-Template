@@ -1,4 +1,4 @@
-﻿import React, { useContext } from 'react';
+﻿import React, { useContext, useEffect } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import UserContext from '../../auth/user';
 import { StatusMessage, useStatusMessage } from './statusMessage';
@@ -11,13 +11,12 @@ const LoginWith2fa = props => {
     const history = useHistory();
     const location = useLocation();
 
+    const returnUrl = !!location.state && location.state.returnUrl || '/';
+    const rememberMe = !!location.state && location.state.rememberMe || false;
+
     const { getSignedInUser } = useContext(UserContext);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
-
-    const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
-    const rememberMe = (!!location.state && !!location.state.rememberMe) ? location.state.rememberMe : false;
-
+    const [setMessage, statMsgConnector] = useStatusMessage();   
     const { LoginWith2fa } = useAccount();
 
     const initModel = {
@@ -26,15 +25,14 @@ const LoginWith2fa = props => {
         rememberMe: rememberMe,
         returnUrl: returnUrl
     };
-
-    const { model, onPropChanged, onCheckChanged, handleErrors, errors, clearErrors } = useForm(initModel);
+    const loginForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        loginForm.clearErrors();
 
-        LoginWith2fa(model)
+        LoginWith2fa(loginForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     getSignedInUser();
@@ -42,18 +40,18 @@ const LoginWith2fa = props => {
                     history.push(resp);
                 }
                 else {
-                    handleErrors(resp);
+                    loginForm.handleErrors(resp);
                 }
             });
     };
 
     useEffect(() => {
 
-        if (!!errors.ModelErrors) {
-            setMessage(errors.ModelErrors, 'danger');
+        if (!!loginForm.errors.ModelErrors) {
+            setMessage(loginForm.errors.ModelErrors, 'danger');
         }
 
-    }, [errors.ModelErrors]);
+    }, [loginForm.errors.ModelErrors]);
 
     return (
         <>
@@ -67,12 +65,12 @@ const LoginWith2fa = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="twoFactorCode">Two Factor Code</Label>
-                            <Input type="text" name="twoFactorCode" value={model.twoFactorCode} invalid={!!errors.TwoFactorCode} onChange={onPropChanged} autocomplete='off' />
-                            <FormFeedback>{errors.TwoFactorCode}</FormFeedback>
+                            <Input type="text" name="twoFactorCode" value={loginForm.model.twoFactorCode} invalid={!!loginForm.errors.TwoFactorCode} onChange={loginForm.onPropChanged} autocomplete='off' />
+                            <FormFeedback>{loginForm.errors.TwoFactorCode}</FormFeedback>
                         </FormGroup>
                         <FormGroup check>
                             <Label check>
-                                <Input type="checkbox" name="rememberMachine" checked={model.rememberMachine} onChange={onCheckChanged} />{' '}Remember mcahine?
+                                <Input type="checkbox" name="rememberMachine" checked={loginForm.model.rememberMachine} onChange={loginForm.onCheckChanged} />{' '}Remember mcahine?
                             </Label>
                         </FormGroup>
                         <FormGroup>

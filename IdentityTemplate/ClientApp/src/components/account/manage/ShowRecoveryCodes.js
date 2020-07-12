@@ -1,33 +1,30 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
-import { Row, Col } from 'reactstrap';
-import { useAccount } from '../useAccount';
 import { useLocation } from 'react-router-dom';
+import { Row, Col } from 'reactstrap';
+import { StatusMessage, useStatusMessage } from '../statusMessage';
 
 const ShowRecoveryCodes = props => {
 
     const location = useLocation();
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
-
     const [recoveryCodes, setRecoveryCodes] = useState([]);
+
+    const [setMessage, statMsgConnector] = useStatusMessage();
 
     useEffect(() => {
 
-            if (!!location.state) {
-                console.log('state?');
-                console.log(location.state);
-                const status = location.state.status || null;
-                const codes = location.state.recoveryCodes || [];
-                if (!!status) {
-                    setMessage(status.status, status.alertColor, 10000);
-                    console.log(codes || 'no codes');
-                    setRecoveryCodes(codes);
-                }
-            }
+        const status = !!location.state && location.state.status || null;
+        const codes = !!location.state && location.state.recoveryCodes || null;
 
+        if (!!status) {
+            setMessage(status.status, status.alertColor, 10000);
+        }
 
-    }, [location.state]);
+        if (!codes) {
+            setRecoveryCodes(codes);
+        }
+
+    }, []);
 
     return (
         <>

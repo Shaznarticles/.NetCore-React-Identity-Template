@@ -12,39 +12,35 @@ const ManageIndex = props => {
     const { userConfig, getSignedInUser } = useContext(UserContext);
 
     const { UpdateProfile } = useAccount();
-
     const [setMessage, statMsgConnector] = useStatusMessage();
 
     const initModel = {
         userName: '',
         phoneNumber: ''
     };
-
-    const { model, onPropChanged, setObject, handleErrors, errors, clearErrors } = useForm(initModel);
+    const profileForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        profileForm.clearErrors();
 
-        UpdateProfile(model)
+        UpdateProfile(profileForm.model)
             .then(resp => {
                 if (!!resp && !!resp.status) {
                     setMessage(resp.status, resp.alertColor);
                     getSignedInUser();
                 }
                 else {
-                    handleErrors(resp);
+                    profileForm.handleErrors(resp);
                 }
             });
     };
 
     useEffect(() => {
 
-        if (!userConfig.user) setObject(initModel);
-        else setObject(userConfig.user);
-
-        //console.log(userConfig.user);
+        if (!userConfig.user) profileForm.setObject(initModel);
+        else profileForm.setObject(userConfig.user);
 
     }, [userConfig.user]);
 
@@ -57,12 +53,12 @@ const ManageIndex = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="userName">Username</Label>
-                            <Input type="text" name="userName" value={model.userName} disabled />
+                            <Input type="text" name="userName" value={profileForm.model.userName} disabled />
                         </FormGroup>
                         <FormGroup>
                             <Label for="phoneNumber">Phone Number</Label>
-                            <Input type="text" name="phoneNumber" value={model.phoneNumber} invalid={!!errors.PhoneNumber} onChange={onPropChanged} />
-                            <FormFeedback>{errors.PhoneNumber}</FormFeedback>
+                            <Input type="text" name="phoneNumber" value={profileForm.model.phoneNumber} invalid={!!profileForm.errors.PhoneNumber} onChange={profileForm.onPropChanged} />
+                            <FormFeedback>{profileForm.errors.PhoneNumber}</FormFeedback>
                         </FormGroup>  
                         <FormGroup>
                             <Button color='primary'>Save</Button>

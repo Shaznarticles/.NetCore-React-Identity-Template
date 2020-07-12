@@ -15,13 +15,12 @@ const SetPassword = props => {
         newPassword: '',
         confirmPassword: ''
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
+    const pwForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        pwForm.clearErrors();
 
         //submit of new password, and handle errors
 
@@ -40,13 +39,13 @@ const SetPassword = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="newPassword">New Password</Label>
-                            <Input type="text" name="newPassword" value={model.newPassword} invalid={!!errors.NewPassword} onChange={onPropChanged} />
-                            <FormFeedback>{errors.NewPassword}</FormFeedback>
+                            <Input type="text" name="newPassword" value={pwForm.model.newPassword} invalid={!!pwForm.errors.NewPassword} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.NewPassword}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="confirmPassword">Confirm Password</Label>
-                            <Input type="text" name="confirmPassword" value={model.confirmPassword} invalid={!!errors.ConfirmPassword} onChange={onPropChanged} />
-                            <FormFeedback>{errors.ConfirmPassword}</FormFeedback>
+                            <Input type="text" name="confirmPassword" value={pwForm.model.confirmPassword} invalid={!!pwForm.errors.ConfirmPassword} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.ConfirmPassword}</FormFeedback>
                         </FormGroup>     
                         <FormGroup>
                             <Button color='primary'>Set password</Button>

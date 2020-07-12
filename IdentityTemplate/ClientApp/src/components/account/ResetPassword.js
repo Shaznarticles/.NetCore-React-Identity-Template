@@ -1,9 +1,9 @@
-﻿import React from 'react';
+﻿import React, { useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Row, Col, Form, FormGroup, Label, Input, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useAccount } from './useAccount';
-import { useLocation, useHistory } from 'react-router-dom';
 
 const getQueryObject = () => {
     let queryObj = {};
@@ -26,41 +26,39 @@ const ResetPassword = props => {
     const code = getQueryObject().code;
 
     const [setMessage, statMsgConnector] = useStatusMessage();
-    
+    const { ResetPassword } = useAccount();
+        
     const initModel = {
         code: code,
         email: '',
         password: '',
         confirmPassword: ''
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
-
-    const { ResetPassword } = useAccount();
+    const pwForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        pwForm.clearErrors();
 
-        ResetPassword(model)
+        ResetPassword(pwForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     history.push(resp);
                 }
                 else {
-                    handleErrors(resp);
+                    pwForm.handleErrors(resp);
                 }
             });
     };
 
     useEffect(() => {
 
-        if (!!errors.ModelErrors) {
-            setMessage(errors.ModelErrors, 'danger');
+        if (!!pwForm.errors.ModelErrors) {
+            setMessage(pwForm.errors.ModelErrors, 'danger');
         }
 
-    }, [errors.ModelErrors]);
+    }, [pwForm.errors.ModelErrors]);
 
     return (
         <>
@@ -73,18 +71,18 @@ const ResetPassword = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
-                            <FormFeedback>{errors.Email}</FormFeedback>
+                            <Input type="text" name="email" value={pwForm.model.email} invalid={!!pwForm.errors.Email} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.Email}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="password">Password</Label>
-                            <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
-                            <FormFeedback>{errors.Password}</FormFeedback>
+                            <Input type="password" name="password" value={pwForm.model.password} invalid={!!pwForm.errors.Password} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.Password}</FormFeedback>
                         </FormGroup> 
                         <FormGroup>
                             <Label for="confirmPassword">Confirm Password</Label>
-                            <Input type="password" name="confirmPassword" value={model.confirmPassword} invalid={!!errors.ConfirmPassword} onChange={onPropChanged} />
-                            <FormFeedback>{errors.ConfirmPassword}</FormFeedback>
+                            <Input type="password" name="confirmPassword" value={pwForm.model.confirmPassword} invalid={!!pwForm.errors.ConfirmPassword} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.ConfirmPassword}</FormFeedback>
                         </FormGroup>  
                         <FormGroup>
                             <Button color='primary'>Reset</Button>

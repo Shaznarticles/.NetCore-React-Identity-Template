@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
@@ -7,31 +7,30 @@ import { useAccount } from '../useAccount';
 
 const ChangePassword = props => {
 
+    const [setMessage, statMsgConnector] = useStatusMessage();
+    const { ChangePassword } = useAccount();
+
     const initModel = {
         oldPassword: '',
         newPassword: '',
         confirmPassword: '',
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
-    const [setMessage, statMsgConnector] = useStatusMessage();
-
-    const { ChangePassword } = useAccount();
-
+    const pwForm = useForm(initModel);
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        pwForm.clearErrors();
 
-        if (model.newPassword === model.confirmPassword) {
+        if (pwForm.model.newPassword === pwForm.model.confirmPassword) {
 
-            ChangePassword(model)
+            ChangePassword(pwForm.model)
                 .then(resp => {
                     if (!!resp && !!resp.status) {
                         setMessage(resp.status, resp.alertColor);
                     }
                     else {
-                        handleErrors(resp);
+                        pwForm.handleErrors(resp);
                     }
                 });
         }
@@ -42,11 +41,11 @@ const ChangePassword = props => {
 
     useEffect(() => {
 
-        if (!!errors.ModelErrors) {
-            setMessage(errors.ModelErrors, 'danger');
+        if (!!pwForm.errors.ModelErrors) {
+            setMessage(pwForm.errors.ModelErrors, 'danger');
         }
 
-    }, [errors.ModelErrors]);
+    }, [pwForm.errors.ModelErrors]);
 
     return (
         <>
@@ -57,18 +56,18 @@ const ChangePassword = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="oldPassword">Old Password</Label>
-                            <Input type="password" name="oldPassword" value={model.oldPassword} invalid={!!errors.OldPassword} onChange={onPropChanged} />
-                            <FormFeedback>{errors.OldPassword}</FormFeedback>
+                            <Input type="password" name="oldPassword" value={pwForm.model.oldPassword} invalid={!!pwForm.errors.OldPassword} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.OldPassword}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="newPassword">New Password</Label>
-                            <Input type="password" name="newPassword" value={model.newPassword} invalid={!!errors.NewPassword} onChange={onPropChanged} />
-                            <FormFeedback>{errors.NewPassword}</FormFeedback>
+                            <Input type="password" name="newPassword" value={pwForm.model.newPassword} invalid={!!pwForm.errors.NewPassword} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.NewPassword}</FormFeedback>
                         </FormGroup>       
                         <FormGroup>
                             <Label for="confirmPassword">Confirm Password</Label>
-                            <Input type="password" name="confirmPassword" value={model.confirmPassword} invalid={!!errors.ConfirmPassword} onChange={onPropChanged} />
-                            <FormFeedback>{errors.ConfirmPassword}</FormFeedback>
+                            <Input type="password" name="confirmPassword" value={pwForm.model.confirmPassword} invalid={!!pwForm.errors.ConfirmPassword} onChange={pwForm.onPropChanged} />
+                            <FormFeedback>{pwForm.errors.ConfirmPassword}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Button color='primary'>Update password</Button>

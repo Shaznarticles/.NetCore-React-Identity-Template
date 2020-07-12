@@ -7,28 +7,26 @@ import { useAccount } from './useAccount';
 
 const ResendEmailConfirmation = props => {
 
+    const [setMessage, statMsgConnector] = useStatusMessage();
+    const { ResendEmailConfirmation } = useAccount();
+
     const initModel = {
         email: ''
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
-
-    const [setMessage, statMsgConnector] = useStatusMessage();
-
-    const { ResendEmailConfirmation } = useAccount();
-
+    const emailForm = useForm(initModel);
+      
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        emailForm.clearErrors();
 
-        ResendEmailConfirmation(model)
+        ResendEmailConfirmation(emailForm.model)
             .then(resp => {
                 if (!!resp && !!resp.status) {
                     setMessage(resp.status, resp.alertColor);
                 }
                 else {
-                    handleErrors(resp);
+                    emailForm.handleErrors(resp);
                 }
             });
     };
@@ -44,8 +42,8 @@ const ResendEmailConfirmation = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
-                            <FormFeedback>{errors.Email}</FormFeedback>
+                            <Input type="text" name="email" value={emailForm.model.email} invalid={!!emailForm.errors.Email} onChange={emailForm.onPropChanged} />
+                            <FormFeedback>{emailForm.errors.Email}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Button color='primary'>Resend</Button>

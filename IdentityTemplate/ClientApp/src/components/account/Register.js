@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { StatusMessage, useStatusMessage } from './statusMessage';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
+import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -10,13 +10,12 @@ const Register = props => {
     const location = useLocation();
     const history = useHistory();
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
-
-    const { GetExternalLogins, Register } = useAccount();
-
-    const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
+    const returnUrl = !!location.state && location.state.returnUrl || '/';
 
     const [externalLogins, setExternalLogins] = useState([]);
+
+    const [setMessage, statMsgConnector] = useStatusMessage();
+    const { GetExternalLogins, Register } = useAccount();
         
     const initModel = {
         email: '',
@@ -24,21 +23,20 @@ const Register = props => {
         confirmPassword: '',
         returnUrl: returnUrl
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
+    const registerForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        registerForm.clearErrors();
 
-        Register(model)
+        Register(registerForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     history.push(resp);
                 }
                 else {
-                    handleErrors(resp);
+                    registerForm.handleErrors(resp);
                 }
             });
     };
@@ -49,11 +47,11 @@ const Register = props => {
 
     useEffect(() => {
 
-        if (!!errors.ModelErrors) {
-            setMessage(errors.ModelErrors, 'danger');
+        if (!!registerForm.errors.ModelErrors) {
+            setMessage(registerForm.errors.ModelErrors, 'danger');
         }
 
-    }, [errors.ModelErrors]);
+    }, [registerForm.errors.ModelErrors]);
 
     useEffect(() => {
 
@@ -81,18 +79,18 @@ const Register = props => {
                         <hr />
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
-                            <FormFeedback>{errors.Email}</FormFeedback>
+                            <Input type="text" name="email" value={registerForm.model.email} invalid={!!registerForm.errors.Email} onChange={registerForm.onPropChanged} />
+                            <FormFeedback>{registerForm.errors.Email}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="password">Password</Label>
-                            <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
-                            <FormFeedback>{errors.Password}</FormFeedback>
+                            <Input type="password" name="password" value={registerForm.model.password} invalid={!!registerForm.errors.Password} onChange={registerForm.onPropChanged} />
+                            <FormFeedback>{registerForm.errors.Password}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="confirmPassword">Confirm Password</Label>
-                            <Input type="password" name="confirmPassword" value={model.confirmPassword} invalid={!!errors.ConfirmPassword} onChange={onPropChanged} />
-                            <FormFeedback>{errors.ConfirmPassword}</FormFeedback>
+                            <Input type="password" name="confirmPassword" value={registerForm.model.confirmPassword} invalid={!!registerForm.errors.ConfirmPassword} onChange={registerForm.onPropChanged} />
+                            <FormFeedback>{registerForm.errors.ConfirmPassword}</FormFeedback>
                         </FormGroup>                                               
                         <Button color='primary'>Submit</Button>
                     </Form>

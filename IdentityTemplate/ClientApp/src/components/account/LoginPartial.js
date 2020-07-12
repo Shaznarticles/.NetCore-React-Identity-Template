@@ -7,7 +7,9 @@ import { useAccount } from './useAccount';
 const LoginPartial = props => {
 
     const history = useHistory();
+
     const { userConfig, getSignedInUser } = useContext(UserContext);
+
     const { Logout } = useAccount();
 
     const logout = () => {

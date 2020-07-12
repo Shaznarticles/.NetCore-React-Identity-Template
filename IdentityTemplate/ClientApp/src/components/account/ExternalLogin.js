@@ -1,27 +1,26 @@
 ﻿import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
-import { useLocation } from 'react-router-dom';
 
 const ExternalLogin = props => {
 
     const location = useLocation();
 
-    const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
-    const providerDisplayName = (!!location.state && !!location.state.providerDisplayName) ? location.state.providerDisplayName : '';
+    const returnUrl = !!location.state && location.state.returnUrl || '/';
+    const providerDisplayName = !!location.state && location.state.providerDisplayName || '';
 
     const initModel = {
         email: ''
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
+    const registerForm = useForm(initModel);
     
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        registerForm.clearErrors();
 
-        //register with external login and handle errors
+        //register with external login and registerForm.handleErrors
 
     };
 
@@ -42,8 +41,8 @@ const ExternalLogin = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
-                            <FormFeedback>{errors.Email}</FormFeedback>
+                            <Input type="text" name="email" value={registerForm.model.email} invalid={!!registerForm.errors.Email} onChange={registerForm.onPropChanged} />
+                            <FormFeedback>{registerForm.errors.Email}</FormFeedback>
                         </FormGroup>
                         <Button color='primary'>Register</Button>
                     </Form>

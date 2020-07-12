@@ -1,40 +1,38 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import QRCode from 'qrcode.react';
+import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
 import { useAccount } from '../useAccount';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
-import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button, FormFeedback } from 'reactstrap';
-import QRCode from 'qrcode.react';
 
 const EnableAuthenticator = props => {
 
     const history = useHistory();
 
-    const { LoadSharedKeyAndQRCodeUri, Verify2FACode } = useAccount();
-
     const [sharedKey, setSharedKey] = useState('');
     const [authenticatorUri, setAuthenticatorUri] = useState('');
 
+    const { LoadSharedKeyAndQRCodeUri, Verify2FACode } = useAccount();
     const [setMessage, statMsgConnector] = useStatusMessage();
 
     const initModel = {
         code: ''
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
+    const codeForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        codeForm.clearErrors();
 
-        Verify2FACode(model)
+        Verify2FACode(codeForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     history.push(resp);
                 }
                 else {
-                    handleErrors(resp);
+                    codeForm.handleErrors(resp);
                 }
             });
     };
@@ -83,8 +81,8 @@ const EnableAuthenticator = props => {
                                 <Form id="send-code" onSubmit={handleSubmit}>
                                     <FormGroup>
                                         <Label for="code">Verification Code</Label>
-                                        <Input type="text" name="code" value={model.code} invalid={!!errors.Code} onChange={onPropChanged} />
-                                        <FormFeedback>{errors.Code}</FormFeedback>
+                                        <Input type="text" name="code" value={codeForm.model.code} invalid={!!codeForm.errors.Code} onChange={codeForm.onPropChanged} />
+                                        <FormFeedback>{codeForm.errors.Code}</FormFeedback>
                                     </FormGroup>
                                     <FormGroup>
                                         <Button color='primary'>Verify</Button>

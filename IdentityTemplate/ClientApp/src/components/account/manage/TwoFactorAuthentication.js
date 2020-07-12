@@ -78,7 +78,7 @@ const TwoFactorAuthentication = props => {
 
     useEffect(() => {
 
-        const status = (!!location.state && !!location.state.status) ? location.state.status : null;
+        const status = !!location.state && location.state.status || null;
         if (!!status) {
             setMessage(status.status, status.alertColor, 10000);
         }

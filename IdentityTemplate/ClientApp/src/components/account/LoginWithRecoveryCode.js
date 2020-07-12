@@ -1,8 +1,8 @@
-﻿import React, { useContext } from 'react';
+﻿import React, { useContext, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import UserContext from '../../auth/user';
 import { StatusMessage, useStatusMessage } from './statusMessage';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -12,27 +12,25 @@ const LoginWithRecoveryCode = props => {
     const location = useLocation();
     const history = useHistory();
 
+    const returnUrl = !!location.state && location.state.returnUrl || '/';
+
     const { getSignedInUser } = useContext(UserContext);
 
     const [setMessage, statMsgConnector] = useStatusMessage();
-
-    const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
-
     const { LoginWithRecoveryCode } = useAccount();
 
     const initModel = {
         recoveryCode: '',
         returnUrl: returnUrl
     };
-
-    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
+    const loginForm = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        clearErrors();
+        loginForm.clearErrors();
 
-        LoginWithRecoveryCode(model)
+        LoginWithRecoveryCode(loginForm.model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     getSignedInUser();
@@ -40,18 +38,18 @@ const LoginWithRecoveryCode = props => {
                     history.push(resp);
                 }
                 else {
-                    handleErrors(resp);
+                    loginForm.handleErrors(resp);
                 }
             });
     };
 
     useEffect(() => {
 
-        if (!!errors.ModelErrors) {
-            setMessage(errors.ModelErrors, 'danger');
+        if (!!loginForm.errors.ModelErrors) {
+            setMessage(loginForm.errors.ModelErrors, 'danger');
         }
 
-    }, [errors.ModelErrors]);
+    }, [loginForm.errors.ModelErrors]);
 
     return (
         <>
@@ -68,8 +66,8 @@ const LoginWithRecoveryCode = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="recoveryCode">Recovery Code</Label>
-                            <Input type="text" name="recoveryCode" value={model.recoveryCode} invalid={!!errors.RecoveryCode} onChange={onPropChanged} />
-                            <FormFeedback>{errors.RecoveryCode}</FormFeedback>
+                            <Input type="text" name="recoveryCode" value={loginForm.model.recoveryCode} invalid={!!loginForm.errors.RecoveryCode} onChange={loginForm.onPropChanged} />
+                            <FormFeedback>{loginForm.errors.RecoveryCode}</FormFeedback>
                         </FormGroup>
                         <Button type="submit" class="btn btn-primary">Log in</Button>
                     </Form>
