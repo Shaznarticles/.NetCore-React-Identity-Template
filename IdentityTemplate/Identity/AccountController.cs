@@ -526,6 +526,39 @@ namespace IdentityTemplate.Controllers
             });
         }
                 
+        [HttpPost("SetPassword")]
+        public async Task<IActionResult> SetPassword([FromBody]SetPasswordInput input)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Ok(ModelState);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var addPasswordResult = await _userManager.AddPasswordAsync(user, input.NewPassword);
+            if (!addPasswordResult.Succeeded)
+            {
+                foreach (var error in addPasswordResult.Errors)
+                {
+                    ModelState.AddModelError("ModelErrors", error.Description);
+                }
+                return Ok(ModelState);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            var statusMessage = "Your password has been set.";
+
+            return Ok(new StatusResponse()
+            {
+                Status = statusMessage
+            });
+        }
+
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPasswordPost([FromBody]ResetPasswordInput input)
         {

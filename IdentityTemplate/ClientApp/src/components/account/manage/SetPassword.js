@@ -1,15 +1,16 @@
-﻿import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+﻿import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
-
+import { useAccount } from '../useAccount';
 
 const SetPassword = props => {
 
-    const { statusMessage } = props;
+    const history = useHistory();
 
     const [setMessage, statMsgConnector] = useStatusMessage();
+    const { HasPassword, SetPassword } = useAccount();
 
     const initModel = {
         newPassword: '',
@@ -22,9 +23,25 @@ const SetPassword = props => {
 
         pwForm.clearErrors();
 
-        //submit of new password, and handle errors
-
+        SetPassword(pwForm.model)
+            .then(resp => {
+                if (!!resp && !!resp.status) {
+                    setMessage(resp.status, resp.alertColor);
+                }
+                else {
+                    pwForm.handleErrors(resp);
+                }
+            });
     };
+
+    useEffect(() => {
+                
+        HasPassword()
+            .then(hasPw => {
+                if (hasPw) history.push('/Account/Manage/ChangePassword');
+            });
+
+    }, []);
 
     return (
         <>

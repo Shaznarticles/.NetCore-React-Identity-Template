@@ -129,6 +129,16 @@ export const useAccount = () => {
         });
     };
 
+    const SetPassword = async (pwObj) => {
+        return new Promise((resolve, reject) => {
+            Api.post('api/Account/SetPassword', pwObj)
+                .then(resp => {
+                    resolve(resp.data);
+                })
+                .catch(err => reject(err));
+        });
+    };
+
     const ForgotPassword = async (emailObj) => {
         return new Promise((resolve, reject) => {
             Api.post('api/Account/ForgotPassword', emailObj)
@@ -297,7 +307,7 @@ export const useAccount = () => {
     return {
         GetExternalLogins, HasPassword, Register, Login,
         Logout, UpdateProfile, GetSignedInUser, IsEmailConfirmed,
-        SendEmailVerification, ChangeEmail, ChangePassword,
+        SendEmailVerification, ChangeEmail, ChangePassword, SetPassword,
         ForgotPassword, LoginWith2fa, LoginWithRecoveryCode,
         ResendEmailConfirmation, ResetPassword, DeletePersonalData,
         TwoFactorEnabled, HasAuthenticator, IsMachineRemembered, RecoveryCodesLeft,
