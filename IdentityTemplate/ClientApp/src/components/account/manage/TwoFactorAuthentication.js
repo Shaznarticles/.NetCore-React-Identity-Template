@@ -72,11 +72,7 @@ const TwoFactorAuthentication = props => {
             .then(resp => {
                 if (!!resp && !!resp.status) {
                     setMessage(resp.status, resp.alertColor, 10000);
-                }
-                else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
-                }
+                }                
             });
     };
 

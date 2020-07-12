@@ -21,6 +21,8 @@ export const useForm = (initObj) => {
         switch (action.type) {
             case 'setErrorObject':
                 return action.object;
+            case 'clearErrorObject':
+                return {};
             case 'addError':
                 return { ...state, [action.prop]: action.value };
             case 'clearError':
@@ -49,24 +51,28 @@ export const useForm = (initObj) => {
         setErrorObject(object);
     };
 
-    const setErrorObject = (obj) => {
+    const setErrorObject = (errorModel) => {
         var errObject = {};
 
-        Object.keys(obj).forEach(prop => {
-            errObject = { ...errObject, [prop]: '' };
+        Object.keys(errorModel).forEach(prop => {
+            if (!!prop && !!errorModel[prop].errors) {
+                var errors = errorModel[prop].errors.map(x => x.errorMessage);
+                var errorStr = errors.join("<br/>");
+                errObject = { ...errObject, [prop]: errorStr };
+            }
         });
 
         dispatchErrors({ type: 'setErrorObject', object: errObject });
     };
 
     const clearErrors = () => {
-        Object.keys(errorState).forEach(prop => {
-            dispatchErrors({ type: 'clearError', prop });
-        });
+        dispatchErrors({ type: 'clearErrorObject' });
     };
 
     const handleErrors = (errModel) => {
         console.log(errModel);
+
+        setErrorObject(errModel);
     };
 
     useEffect(() => {

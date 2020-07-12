@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from '../../../utils/useForm';
 import { useAccount } from '../useAccount';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
-import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button, FormFeedback } from 'reactstrap';
 import QRCode from 'qrcode.react';
 
 const EnableAuthenticator = props => {
@@ -21,10 +21,12 @@ const EnableAuthenticator = props => {
         code: ''
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         Verify2FACode(model)
             .then(resp => {
@@ -32,8 +34,7 @@ const EnableAuthenticator = props => {
                     history.push(resp);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
@@ -82,7 +83,8 @@ const EnableAuthenticator = props => {
                                 <Form id="send-code" onSubmit={handleSubmit}>
                                     <FormGroup>
                                         <Label for="code">Verification Code</Label>
-                                        <Input type="text" name="code" value={model.code} onChange={onPropChanged} />
+                                        <Input type="text" name="code" value={model.code} invalid={!!errors.Code} onChange={onPropChanged} />
+                                        <FormFeedback>{errors.Code}</FormFeedback>
                                     </FormGroup>
                                     <FormGroup>
                                         <Button color='primary'>Verify</Button>

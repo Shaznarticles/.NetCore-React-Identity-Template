@@ -29,7 +29,7 @@ namespace IdentityTemplate.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly IEmailSender _emailSender;
         private readonly UrlEncoder _urlEncoder;
-
+        
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -63,16 +63,7 @@ namespace IdentityTemplate.Controllers
             var result = await _userManager.ConfirmEmailAsync(user, code);
             var statusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
 
-            return Redirect("/Account/ConfirmEmail");
-
-            //return Ok(new RedirectStatusResponse()
-            //{
-            //    Pathname = "/Account/ConfirmEmail",
-            //    State = new RedirectStatusState()
-            //    {
-            //        Status = statusMessage
-            //    }
-            //});
+            return Redirect("/Account/ConfirmEmail");                        
         }
 
         [AllowAnonymous]
@@ -155,7 +146,7 @@ namespace IdentityTemplate.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError("ModelErrors", "Invalid login attempt.");
 
                     return Ok(ModelState);
                 }
@@ -214,7 +205,7 @@ namespace IdentityTemplate.Controllers
                 }
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError("ModelErrors", error.Description);
                 }
             }
 
@@ -268,7 +259,7 @@ namespace IdentityTemplate.Controllers
             else
             {
                 _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
-                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                ModelState.AddModelError("ModelErrors", "Invalid authenticator code.");
                 return Ok(ModelState);
             }
         }
@@ -313,7 +304,7 @@ namespace IdentityTemplate.Controllers
             else
             {
                 _logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", user.Id);
-                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
+                ModelState.AddModelError("ModelErrors", "Invalid recovery code entered.");
                 return Ok(ModelState);
             }
         }
@@ -521,7 +512,7 @@ namespace IdentityTemplate.Controllers
             {
                 foreach (var error in changePasswordResult.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError("ModelErrors", error.Description);
                 }
                 return Ok(ModelState);
             }
@@ -564,7 +555,7 @@ namespace IdentityTemplate.Controllers
 
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError("ModelErrors", error.Description);
             }
             return Ok(ModelState);
 
@@ -584,7 +575,7 @@ namespace IdentityTemplate.Controllers
             {
                 if (!await _userManager.CheckPasswordAsync(user, input.Password))
                 {
-                    ModelState.AddModelError(string.Empty, "Incorrect password.");
+                    ModelState.AddModelError("ModelErrors", "Incorrect password.");
                     return Ok(ModelState);
                 }
             }
@@ -827,7 +818,7 @@ namespace IdentityTemplate.Controllers
 
             if (!is2faTokenValid)
             {
-                ModelState.AddModelError("Input.Code", "Verification code is invalid.");
+                ModelState.AddModelError(nameof(input.Code), "Verification code is invalid.");
                 await LoadSharedKeyAndQrCodeUriAsync(user);
                 return Ok(ModelState);
             }

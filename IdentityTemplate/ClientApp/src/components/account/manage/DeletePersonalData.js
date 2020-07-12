@@ -1,7 +1,8 @@
 ﻿import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
+import { StatusMessage, useStatusMessage } from '../statusMessage';
 import UserContext from '../../../auth/user';
 import { useAccount } from '../useAccount';
 
@@ -11,6 +12,8 @@ const DeletePersonalData = props => {
 
     const { getSignedInUser } = useContext(UserContext);
 
+    const [setMessage, statMsgConnector] = useStatusMessage();
+
     const [requirePassword, setRequirePassword] = useState(true);
 
     const { HasPassword, DeletePersonalData } = useAccount();
@@ -19,10 +22,12 @@ const DeletePersonalData = props => {
         password: ''
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         DeletePersonalData(model)
             .then(resp => {
@@ -32,8 +37,7 @@ const DeletePersonalData = props => {
                     history.push(resp);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
@@ -47,9 +51,18 @@ const DeletePersonalData = props => {
 
     }, []);
 
+    useEffect(() => {
+
+        if (!!errors.ModelErrors) {
+            setMessage(errors.ModelErrors, 'danger');
+        }
+
+    }, [errors.ModelErrors]);
+
     return (
         <>
             <h4>Delete Personal Data</h4>
+            <StatusMessage connector={statMsgConnector} />
 
             <div className="alert alert-warning" role="alert">
                 <p>
@@ -63,7 +76,8 @@ const DeletePersonalData = props => {
                         (
                             <FormGroup>
                                 <Label for="password">Password</Label>
-                                <Input type="password" name="password" value={model.password} onChange={onPropChanged} />
+                                <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
+                                <FormFeedback>{errors.Password}</FormFeedback>
                             </FormGroup>
                         )
                     }

@@ -1,6 +1,7 @@
 ﻿import React from 'react';
-import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
+import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useAccount } from './useAccount';
 import { useLocation, useHistory } from 'react-router-dom';
 
@@ -24,7 +25,8 @@ const ResetPassword = props => {
 
     const code = getQueryObject().code;
 
-
+    const [setMessage, statMsgConnector] = useStatusMessage();
+    
     const initModel = {
         code: code,
         email: '',
@@ -32,28 +34,38 @@ const ResetPassword = props => {
         confirmPassword: ''
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const { ResetPassword } = useAccount();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-                
+
+        clearErrors();
+
         ResetPassword(model)
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     history.push(resp);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
 
+    useEffect(() => {
+
+        if (!!errors.ModelErrors) {
+            setMessage(errors.ModelErrors, 'danger');
+        }
+
+    }, [errors.ModelErrors]);
+
     return (
         <>
             <h1>Reset Password</h1>
+            <StatusMessage connector={statMsgConnector} />
             <h4>Reset your password.</h4>
             <hr />
             <Row>
@@ -61,15 +73,18 @@ const ResetPassword = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} onChange={onPropChanged} />
+                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
+                            <FormFeedback>{errors.Email}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="password">Password</Label>
-                            <Input type="password" name="password" value={model.password} onChange={onPropChanged} />
+                            <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
+                            <FormFeedback>{errors.Password}</FormFeedback>
                         </FormGroup> 
                         <FormGroup>
                             <Label for="confirmPassword">Confirm Password</Label>
-                            <Input type="password" name="confirmPassword" value={model.confirmPassword} onChange={onPropChanged} />
+                            <Input type="password" name="confirmPassword" value={model.confirmPassword} invalid={!!errors.ConfirmPassword} onChange={onPropChanged} />
+                            <FormFeedback>{errors.ConfirmPassword}</FormFeedback>
                         </FormGroup>  
                         <FormGroup>
                             <Button color='primary'>Reset</Button>

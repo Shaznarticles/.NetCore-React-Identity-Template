@@ -20,11 +20,7 @@ const Disable2fa = props => {
             .then(resp => {
                 if (!!resp && !!resp.pathname) {
                     history.push(resp);
-                }
-                else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
-                }
+                }                
             });
 
     };

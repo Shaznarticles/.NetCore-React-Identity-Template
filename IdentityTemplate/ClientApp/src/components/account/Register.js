@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
+import { StatusMessage, useStatusMessage } from './statusMessage';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -8,6 +9,8 @@ const Register = props => {
 
     const location = useLocation();
     const history = useHistory();
+
+    const [setMessage, statMsgConnector] = useStatusMessage();
 
     const { GetExternalLogins, Register } = useAccount();
 
@@ -22,10 +25,12 @@ const Register = props => {
         returnUrl: returnUrl
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         Register(model)
             .then(resp => {
@@ -33,8 +38,7 @@ const Register = props => {
                     history.push(resp);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
@@ -42,6 +46,14 @@ const Register = props => {
     const providerLogin = (name) => {
 
     };
+
+    useEffect(() => {
+
+        if (!!errors.ModelErrors) {
+            setMessage(errors.ModelErrors, 'danger');
+        }
+
+    }, [errors.ModelErrors]);
 
     useEffect(() => {
 
@@ -60,6 +72,7 @@ const Register = props => {
     return (
         <>
             <h1>Register</h1>
+            <StatusMessage connector={statMsgConnector} />
 
             <Row>
                 <Col md={4}>
@@ -68,15 +81,18 @@ const Register = props => {
                         <hr />
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} onChange={onPropChanged} />
+                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
+                            <FormFeedback>{errors.Email}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="password">Password</Label>
-                            <Input type="password" name="password" value={model.password} onChange={onPropChanged} />
+                            <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
+                            <FormFeedback>{errors.Password}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Label for="confirmPassword">Confirm Password</Label>
-                            <Input type="password" name="confirmPassword" value={model.confirmPassword} onChange={onPropChanged} />
+                            <Input type="password" name="confirmPassword" value={model.confirmPassword} invalid={!!errors.ConfirmPassword} onChange={onPropChanged} />
+                            <FormFeedback>{errors.ConfirmPassword}</FormFeedback>
                         </FormGroup>                                               
                         <Button color='primary'>Submit</Button>
                     </Form>

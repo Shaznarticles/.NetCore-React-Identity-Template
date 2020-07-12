@@ -18,14 +18,7 @@ const GenerateRecoveryCodes = props => {
                 if (!!resp && !!resp.pathname) {
                     //console.log(resp);
                     history.push(resp);
-                }
-                else if (!!resp && !!resp.status) {
-                    setMessage(resp.status, resp.alertColor);
-                }
-                else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
-                }
+                }                             
             });
     };
 

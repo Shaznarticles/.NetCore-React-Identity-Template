@@ -1,6 +1,6 @@
 ﻿import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container, Alert } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, Alert, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
 import UserContext from '../../../auth/user';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
@@ -20,10 +20,12 @@ const ManageIndex = props => {
         phoneNumber: ''
     };
 
-    const { model, onPropChanged, setObject } = useForm(initModel);
+    const { model, onPropChanged, setObject, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         UpdateProfile(model)
             .then(resp => {
@@ -32,8 +34,7 @@ const ManageIndex = props => {
                     getSignedInUser();
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
@@ -60,7 +61,8 @@ const ManageIndex = props => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="phoneNumber">Phone Number</Label>
-                            <Input type="text" name="phoneNumber" value={model.phoneNumber} onChange={onPropChanged} />
+                            <Input type="text" name="phoneNumber" value={model.phoneNumber} invalid={!!errors.PhoneNumber} onChange={onPropChanged} />
+                            <FormFeedback>{errors.PhoneNumber}</FormFeedback>
                         </FormGroup>  
                         <FormGroup>
                             <Button color='primary'>Save</Button>

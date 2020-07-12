@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useAccount } from './useAccount';
@@ -11,7 +11,7 @@ const ResendEmailConfirmation = props => {
         email: ''
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const [setMessage, statMsgConnector] = useStatusMessage();
 
@@ -20,14 +20,15 @@ const ResendEmailConfirmation = props => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        clearErrors();
+
         ResendEmailConfirmation(model)
             .then(resp => {
                 if (!!resp && !!resp.status) {
                     setMessage(resp.status, resp.alertColor);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
@@ -43,7 +44,8 @@ const ResendEmailConfirmation = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} onChange={onPropChanged} />
+                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
+                            <FormFeedback>{errors.Email}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Button color='primary'>Resend</Button>

@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useContext, useState } from 'react';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
 import { useForm } from '../../../utils/useForm';
-import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button, FormFeedback } from 'reactstrap';
 import UserContext from '../../../auth/user';
 import { useAccount } from '../useAccount';
 
@@ -20,10 +20,12 @@ const ManageEmail = props => {
         newEmail: ''
     };
 
-    const { model, onPropChanged, setObject } = useForm(initModel);
+    const { model, onPropChanged, setObject, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         ChangeEmail(model)
             .then(resp => {
@@ -31,23 +33,20 @@ const ManageEmail = props => {
                     setMessage(resp.status, resp.alertColor);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
 
     const sendEmailVerification = () => {
 
+        clearErrors();
+
         SendEmailVerification()
             .then(resp => {
                 if (!!resp && !!resp.status) {
                     setMessage(resp.status, resp.alertColor);
-                }
-                else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
-                }
+                }                
             });
     };
 
@@ -99,7 +98,8 @@ const ManageEmail = props => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="newEmail">New Email</Label>
-                            <Input type="text" name="newEmail" value={model.newEmail} onChange={onPropChanged} />
+                            <Input type="text" name="newEmail" value={model.newEmail} invalid={!!errors.NewEmail} onChange={onPropChanged} />
+                            <FormFeedback>{errors.NewEmail}</FormFeedback>
                         </FormGroup>
                         <FormGroup>
                             <Button color='primary'>Change Email</Button>

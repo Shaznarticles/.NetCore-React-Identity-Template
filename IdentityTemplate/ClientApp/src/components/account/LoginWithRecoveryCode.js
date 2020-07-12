@@ -1,7 +1,8 @@
 ﻿import React, { useContext } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import UserContext from '../../auth/user';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
+import { StatusMessage, useStatusMessage } from './statusMessage';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -13,6 +14,8 @@ const LoginWithRecoveryCode = props => {
 
     const { getSignedInUser } = useContext(UserContext);
 
+    const [setMessage, statMsgConnector] = useStatusMessage();
+
     const returnUrl = (!!location.state && !!location.state.returnUrl) ? location.state.returnUrl : '/';
 
     const { LoginWithRecoveryCode } = useAccount();
@@ -22,10 +25,12 @@ const LoginWithRecoveryCode = props => {
         returnUrl: returnUrl
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         LoginWithRecoveryCode(model)
             .then(resp => {
@@ -35,15 +40,24 @@ const LoginWithRecoveryCode = props => {
                     history.push(resp);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
 
+    useEffect(() => {
+
+        if (!!errors.ModelErrors) {
+            setMessage(errors.ModelErrors, 'danger');
+        }
+
+    }, [errors.ModelErrors]);
+
     return (
         <>
             <h1>Recovery Code Verification</h1>
+            <StatusMessage connector={statMsgConnector} />
+
             <hr />
             <p>
                 You have requested to log in with a recovery code. This login will not be remembered until you provide
@@ -54,7 +68,8 @@ const LoginWithRecoveryCode = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="recoveryCode">Recovery Code</Label>
-                            <Input type="text" name="recoveryCode" value={model.recoveryCode} onChange={onPropChanged} />
+                            <Input type="text" name="recoveryCode" value={model.recoveryCode} invalid={!!errors.RecoveryCode} onChange={onPropChanged} />
+                            <FormFeedback>{errors.RecoveryCode}</FormFeedback>
                         </FormGroup>
                         <Button type="submit" class="btn btn-primary">Log in</Button>
                     </Form>

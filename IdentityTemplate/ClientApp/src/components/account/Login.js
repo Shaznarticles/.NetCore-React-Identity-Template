@@ -1,7 +1,8 @@
 ﻿import React, { useState, useEffect, useContext } from 'react';
 import UserContext from '../../auth/user';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
+import { StatusMessage, useStatusMessage } from './statusMessage';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -11,6 +12,8 @@ const Login = props => {
     const location = useLocation();
 
     const { getSignedInUser } = useContext(UserContext);
+
+    const [setMessage, statMsgConnector] = useStatusMessage();
 
     const { GetExternalLogins, Login } = useAccount();
 
@@ -25,10 +28,12 @@ const Login = props => {
         returnUrl: returnUrl
     };
 
-    const { model, onPropChanged, onCheckChanged } = useForm(initModel);
+    const { model, onPropChanged, onCheckChanged, errors, handleErrors, clearErrors } = useForm(initModel);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         Login(model)
             .then(resp => {
@@ -37,9 +42,8 @@ const Login = props => {
 
                     history.push(resp);
                 }
-                else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                else {                   
+                    handleErrors(resp);
                 }
             });
     };
@@ -48,6 +52,14 @@ const Login = props => {
 
         history.push({ pathname: '/Account/ExternalLogin', state: { returnUrl, providerDisplayName: displayName } })
     };
+
+    useEffect(() => {
+
+        if (!!errors.ModelErrors) {
+            setMessage(errors.ModelErrors, 'danger');
+        }
+
+    }, [errors.ModelErrors]);
 
     useEffect(() => {
 
@@ -66,6 +78,7 @@ const Login = props => {
     return (
         <>
             <h1>Log In</h1>
+            <StatusMessage connector={statMsgConnector} />
             <Row>
                 <Col md={4}>
                     <section>
@@ -74,11 +87,13 @@ const Login = props => {
                             <hr />
                             <FormGroup>
                                 <Label for="email">Email</Label>
-                                <Input type="text" name="email" value={model.email} onChange={onPropChanged} />
+                                <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
+                                <FormFeedback>{errors.Email}</FormFeedback>
                             </FormGroup>
                             <FormGroup>
                                 <Label for="password">Password</Label>
-                                <Input type="password" name="password" value={model.password} onChange={onPropChanged} />
+                                <Input type="password" name="password" value={model.password} invalid={!!errors.Password} onChange={onPropChanged} />
+                                <FormFeedback>{errors.Password}</FormFeedback>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>

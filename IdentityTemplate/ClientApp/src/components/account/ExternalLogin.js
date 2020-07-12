@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useLocation } from 'react-router-dom';
 
@@ -14,10 +14,14 @@ const ExternalLogin = props => {
         email: ''
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
     
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
+
+        //register with external login and handle errors
 
     };
 
@@ -38,7 +42,8 @@ const ExternalLogin = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} onChange={onPropChanged} />
+                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
+                            <FormFeedback>{errors.Email}</FormFeedback>
                         </FormGroup>
                         <Button color='primary'>Register</Button>
                     </Form>

@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -12,11 +12,13 @@ const ForgotPassword = props => {
         email: ''
     };
 
-    const { model, onPropChanged } = useForm(initModel);
+    const { model, onPropChanged, handleErrors, errors, clearErrors } = useForm(initModel);
     const { ForgotPassword } = useAccount();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        clearErrors();
 
         ForgotPassword(model)
             .then(resp => {
@@ -24,8 +26,7 @@ const ForgotPassword = props => {
                     history.push(resp);
                 }
                 else {
-                    console.log('Model State Errors:');
-                    console.log(resp);
+                    handleErrors(resp);
                 }
             });
     };
@@ -40,7 +41,8 @@ const ForgotPassword = props => {
                     <Form onSubmit={handleSubmit}>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input type="text" name="email" value={model.email} onChange={onPropChanged} />
+                            <Input type="text" name="email" value={model.email} invalid={!!errors.Email} onChange={onPropChanged} />
+                            <FormFeedback>{errors.Email}</FormFeedback>
                         </FormGroup>
                         <Button color='primary'>Submit</Button>
                     </Form>

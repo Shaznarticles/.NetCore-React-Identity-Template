@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 
 const ConfirmEmail = () => {
-
+        
     return (
         <>
         <h1>Confirm Email</h1>
