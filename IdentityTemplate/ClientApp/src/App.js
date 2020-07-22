@@ -11,9 +11,7 @@ import AuthorizedRoute from './AuthorizedRoute';
 import './custom.css'
 
 export const App = props => {
-
-    const { location } = props;
-        
+            
     return (
         <Layout>
             <Route exact path='/' component={Home} />

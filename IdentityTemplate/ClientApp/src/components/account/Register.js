@@ -103,8 +103,8 @@ const Register = props => {
                             (
                                 <div>
                                     <p>
-                                        There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                                        for details on setting up this ASP.NET application to support logging in via external services.
+                                        There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a> for
+                                        details on setting up this ASP.NET application to support logging in via external services.
                                     </p>
                                 </div>
                             ) : (
@@ -113,7 +113,7 @@ const Register = props => {
                                         <p>
                                             {externalLogins.map(xLog =>
                                                 (
-                                                    <Button color="primary" value={xLog.Name} title={`Log in using your ${xLog.DisplayName} account`}>{xLog.DisplayName}</Button>
+                                                    <Button color="primary" onClick={() => providerLogin(xLog.Name)} value={xLog.Name} title={`Log in using your ${xLog.DisplayName} account`}>{xLog.DisplayName}</Button>
                                                 )
                                             )}
                                         </p>
