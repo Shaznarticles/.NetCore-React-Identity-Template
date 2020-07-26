@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
+import { useLocation, useHistory } from 'react-router-dom';
+import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
@@ -10,7 +10,7 @@ const Register = props => {
     const location = useLocation();
     const history = useHistory();
 
-    const returnUrl = !!location.state && location.state.returnUrl || '/';
+    const returnUrl = (!!location.state && location.state.returnUrl) || '/';
 
     const [externalLogins, setExternalLogins] = useState([]);
 
@@ -99,7 +99,7 @@ const Register = props => {
                     <section>
                         <h4>Use another service to register.</h4>
                         <hr />
-                        {((externalLogins?.Count ?? 0) == 0) ?
+                        {((externalLogins?.Count ?? 0) === 0) ?
                             (
                                 <div>
                                     <p>

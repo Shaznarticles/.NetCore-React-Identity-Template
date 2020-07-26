@@ -1,14 +1,14 @@
 ﻿import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 
 const ExternalLogin = props => {
 
     const location = useLocation();
 
-    const returnUrl = !!location.state && location.state.returnUrl || '/';
-    const providerDisplayName = !!location.state && location.state.providerDisplayName || '';
+    //const returnUrl = (!!location.state && location.state.returnUrl) || '/';
+    const providerDisplayName = (!!location.state && location.state.providerDisplayName) || '';
 
     const initModel = {
         email: ''

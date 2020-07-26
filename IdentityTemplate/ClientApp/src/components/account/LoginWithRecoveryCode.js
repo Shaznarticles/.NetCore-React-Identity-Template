@@ -1,6 +1,6 @@
 ﻿import React, { useContext, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import UserContext from '../../auth/user';
 import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
@@ -12,7 +12,7 @@ const LoginWithRecoveryCode = props => {
     const location = useLocation();
     const history = useHistory();
 
-    const returnUrl = !!location.state && location.state.returnUrl || '/';
+    const returnUrl = (!!location.state && location.state.returnUrl) || '/';
 
     const { getSignedInUser } = useContext(UserContext);
 

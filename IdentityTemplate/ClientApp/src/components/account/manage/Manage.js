@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-import { Route } from 'react-router';
 import * as Mng from './';
 import AuthorizedRoute from '../../../AuthorizedRoute';
 

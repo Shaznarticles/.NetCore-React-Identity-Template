@@ -13,8 +13,8 @@ const ShowRecoveryCodes = props => {
 
     useEffect(() => {
 
-        const status = !!location.state && location.state.status || null;
-        const codes = !!location.state && location.state.recoveryCodes || null;
+        const status = (!!location.state && location.state.status) || null;
+        const codes = (!!location.state && location.state.recoveryCodes) || null;
 
         if (!!status) {
             setMessage(status.status, status.alertColor, 10000);
@@ -24,7 +24,7 @@ const ShowRecoveryCodes = props => {
             setRecoveryCodes(codes);
         }
 
-    }, []);
+    }, [location.state]);
 
     return (
         <>

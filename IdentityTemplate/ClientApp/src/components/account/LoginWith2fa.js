@@ -2,7 +2,7 @@
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import UserContext from '../../auth/user';
 import { StatusMessage, useStatusMessage } from './statusMessage';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -11,8 +11,8 @@ const LoginWith2fa = props => {
     const history = useHistory();
     const location = useLocation();
 
-    const returnUrl = !!location.state && location.state.returnUrl || '/';
-    const rememberMe = !!location.state && location.state.rememberMe || false;
+    const returnUrl = (!!location.state && location.state.returnUrl) || '/';
+    const rememberMe = (!!location.state && location.state.rememberMe) || false;
 
     const { getSignedInUser } = useContext(UserContext);
 

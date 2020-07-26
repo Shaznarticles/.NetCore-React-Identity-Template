@@ -1,14 +1,12 @@
 ﻿import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Form, FormGroup, Button } from 'reactstrap';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { FormGroup, Button } from 'reactstrap';
 import { useAccount } from '../useAccount';
 
 const GenerateRecoveryCodes = props => {
 
     const history = useHistory();
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
     const { GenerateRecoveryCodes, TwoFactorEnabled } = useAccount();
 
     const generateCodes = () => {
@@ -32,7 +30,6 @@ const GenerateRecoveryCodes = props => {
 
     return (
         <>
-            <StatusMessage connector={statMsgConnector}/>
             <h4>Generate two-factor authentication (2FA) recovery codes</h4>
             <div className="alert alert-warning" role="alert">
                 <p>

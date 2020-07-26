@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route } from 'react-router';
 import { withRouter } from 'react-router-dom';
 import { Layout } from './components/Layout/Layout';

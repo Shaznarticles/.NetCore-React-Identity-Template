@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Row, Col, Form, FormGroup, Label, Input, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { StatusMessage, useStatusMessage } from './statusMessage';
@@ -20,7 +20,6 @@ const getQueryObject = () => {
 
 const ResetPassword = props => {
 
-    const location = useLocation();
     const history = useHistory();
 
     const code = getQueryObject().code;

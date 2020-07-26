@@ -1,10 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Alert, Fade } from 'reactstrap';
+import { Alert, Fade } from 'reactstrap';
 
 export const StatusMessage = props => {
 
-    const { connector, className, ...other } = props;
+    const { connector, className, ...otherProps } = props;
 
     const { message, setMessage, color, timeout } = connector;
 
@@ -35,7 +34,7 @@ export const StatusMessage = props => {
         <>
             {(show) && (
                 <Fade in={fadeIn} onExited={onFadedOut}>
-                    <Alert color={color || 'info'} className={className}>
+                    <Alert color={color || 'info'} className={className} {...otherProps}>
                         {message}
                     </Alert>
                 </Fade>

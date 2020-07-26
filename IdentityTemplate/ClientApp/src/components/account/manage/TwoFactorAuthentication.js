@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { StatusMessage, useStatusMessage } from '../statusMessage';
 import { Link, useLocation } from 'react-router-dom';
-import { Form, Button, FormGroup } from 'reactstrap';
+import { Button, FormGroup } from 'reactstrap';
 import { useAccount } from '../useAccount';
 
 const CodesLeftAlert = (props) => {
@@ -78,7 +78,7 @@ const TwoFactorAuthentication = props => {
 
     useEffect(() => {
 
-        const status = !!location.state && location.state.status || null;
+        const status = (!!location.state && location.state.status) || null;
         if (!!status) {
             setMessage(status.status, status.alertColor, 10000);
         }
@@ -98,7 +98,7 @@ const TwoFactorAuthentication = props => {
                 setIsMachineRemembered(resp);
             });
 
-    }, []);
+    }, [location.state]);
 
     return (
         <>

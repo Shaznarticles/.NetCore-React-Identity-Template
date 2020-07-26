@@ -1,10 +1,9 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import QRCode from 'qrcode.react';
-import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button, FormFeedback } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
 import { useAccount } from '../useAccount';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
 
 const EnableAuthenticator = props => {
 
@@ -14,7 +13,6 @@ const EnableAuthenticator = props => {
     const [authenticatorUri, setAuthenticatorUri] = useState('');
 
     const { LoadSharedKeyAndQRCodeUri, Verify2FACode } = useAccount();
-    const [setMessage, statMsgConnector] = useStatusMessage();
 
     const initModel = {
         code: ''
@@ -49,7 +47,6 @@ const EnableAuthenticator = props => {
 
     return (
         <>
-            <StatusMessage connector={statMsgConnector}/>
             <h4>Configure authenticator app</h4>
             <div>
                 <p>To use an authenticator app go through the following steps:</p>

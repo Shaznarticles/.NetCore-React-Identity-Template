@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Row, Col, FormGroup } from 'reactstrap';
 import { useAccount } from '../useAccount';
@@ -29,7 +29,6 @@ const PersonalData = props => {
                     </p>
                     <FormGroup>
                         <Button color="primary" onClick={download}>Download</Button>
-                        <a id='dlLink' className='d-none' />
                     </FormGroup>
                     <FormGroup>
                         <Button color="primary" onClick={deleteAuth}>Delete</Button>

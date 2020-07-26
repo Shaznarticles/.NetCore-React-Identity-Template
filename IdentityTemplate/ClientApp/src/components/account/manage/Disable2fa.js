@@ -1,15 +1,13 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container } from 'reactstrap';
+import { Button, Form, FormGroup } from 'reactstrap';
 import { useAccount } from '../useAccount';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
 
 const Disable2fa = props => {
 
     const history = useHistory();
 
     const { TwoFactorEnabled, Disable2fa } = useAccount();
-    const [setMessage, statMsgConnector] = useStatusMessage();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -34,7 +32,6 @@ const Disable2fa = props => {
 
     return (
         <>
-            <StatusMessage connector={statMsgConnector}/>
             <h2>Disable two-factor authentication (2FA)</h2>
 
             <div className="alert alert-warning" role="alert">

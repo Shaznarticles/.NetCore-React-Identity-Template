@@ -10,7 +10,7 @@ const ManageEmail = props => {
 
     const [emailConfirmed, setEmailConfirmed] = useState(false);
     const [userEmail, setUserEmail] = useState('');
-    const { userConfig, getSignedInUser } = useContext(UserContext);
+    const { userConfig } = useContext(UserContext);
 
     const [setMessage, statMsgConnector] = useStatusMessage();
     const { IsEmailConfirmed, SendEmailVerification, ChangeEmail } = useAccount();

@@ -1,14 +1,12 @@
-﻿import React, { useState } from 'react';
+﻿import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Row, Col, FormGroup, Form } from 'reactstrap';
+import { Button, FormGroup } from 'reactstrap';
 import { useAccount } from '../useAccount';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
 
 const ResetAuthenticator = props => {
 
     const history = useHistory();
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
     const { ResetAuthenticator } = useAccount();
 
     const resetKey = () => {
@@ -24,7 +22,6 @@ const ResetAuthenticator = props => {
 
     return (
         <>
-            <StatusMessage connector={statMsgConnector}/>
             <h4>Reset Authenticator key</h4>
             <div className="alert alert-warning" role="alert">
                 <p>

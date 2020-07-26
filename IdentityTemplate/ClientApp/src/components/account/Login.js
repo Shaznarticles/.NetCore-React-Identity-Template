@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { Label, Button, Input, Form, Row, Col, FormGroup, Container, FormFeedback } from 'reactstrap';
+import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import UserContext from '../../auth/user';
 import { StatusMessage, useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
@@ -11,7 +11,7 @@ const Login = props => {
     const history = useHistory();
     const location = useLocation();
 
-    const returnUrl = !!location.state && location.state.returnUrl || '/';
+    const returnUrl = (!!location.state && location.state.returnUrl) || '/';
 
     const [externalLogins, setExternalLogins] = useState([]);
     const { getSignedInUser } = useContext(UserContext);
