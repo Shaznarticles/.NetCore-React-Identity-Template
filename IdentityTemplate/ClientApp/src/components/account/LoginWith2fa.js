@@ -1,7 +1,7 @@
 ﻿import React, { useContext, useEffect } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import UserContext from '../../auth/user';
-import { StatusMessage, useStatusMessage } from './statusMessage';
+import { useStatusMessage } from './statusMessage';
 import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
@@ -16,7 +16,7 @@ const LoginWith2fa = props => {
 
     const { getSignedInUser } = useContext(UserContext);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();   
+    const [Status, setStatus] = useStatusMessage();   
     const { LoginWith2fa } = useAccount();
 
     const initModel = {
@@ -48,7 +48,7 @@ const LoginWith2fa = props => {
     useEffect(() => {
 
         if (!!loginForm.errors.ModelErrors) {
-            setMessage(loginForm.errors.ModelErrors, 'danger');
+            setStatus(loginForm.errors.ModelErrors, 'danger');
         }
 
     }, [loginForm.errors.ModelErrors]);
@@ -56,7 +56,7 @@ const LoginWith2fa = props => {
     return (
         <>
             <h1>Two-factor authentication</h1>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
 
             <hr />
             <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>

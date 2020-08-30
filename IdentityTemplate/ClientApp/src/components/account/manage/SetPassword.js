@@ -2,14 +2,14 @@
 import { useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 import { useAccount } from '../useAccount';
 
 const SetPassword = props => {
 
     const history = useHistory();
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { HasPassword, SetPassword } = useAccount();
 
     const initModel = {
@@ -26,7 +26,7 @@ const SetPassword = props => {
         SetPassword(pwForm.model)
             .then(resp => {
                 if (!!resp && !!resp.status) {
-                    setMessage(resp.status, resp.alertColor);
+                    setStatus(resp.status, resp.alertColor);
                 }
                 else {
                     pwForm.handleErrors(resp);
@@ -46,7 +46,7 @@ const SetPassword = props => {
     return (
         <>
             <h4>Set your password</h4>
-            <StatusMessage connector={statMsgConnector}/>
+            <Status />
             <p className="text-info">
                 You do not have a local username/password for this site. Add a local
                 account so you can log in without an external login.

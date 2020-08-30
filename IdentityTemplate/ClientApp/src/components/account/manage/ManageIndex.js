@@ -2,7 +2,7 @@
 import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
 import UserContext from '../../../auth/user';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 import { useAccount } from '../useAccount';
 
 
@@ -11,7 +11,7 @@ const ManageIndex = props => {
     const { userConfig, getSignedInUser } = useContext(UserContext);
 
     const { UpdateProfile } = useAccount();
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
 
     const initModel = {
         userName: '',
@@ -27,7 +27,7 @@ const ManageIndex = props => {
         UpdateProfile(profileForm.model)
             .then(resp => {
                 if (!!resp && !!resp.status) {
-                    setMessage(resp.status, resp.alertColor);
+                    setStatus(resp.status, resp.alertColor);
                     getSignedInUser();
                 }
                 else {
@@ -46,7 +46,7 @@ const ManageIndex = props => {
     return (
         <>
             <h4>Profile</h4>
-            <StatusMessage connector={statMsgConnector}/>
+            <Status />
             <Row>
                 <Col md={6}>
                     <Form onSubmit={handleSubmit}>

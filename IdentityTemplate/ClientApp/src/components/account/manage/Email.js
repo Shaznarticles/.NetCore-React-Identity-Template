@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useContext, useState } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, Button, FormFeedback } from 'reactstrap';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 import { useForm } from '../../../utils/useForm';
 import UserContext from '../../../auth/user';
 import { useAccount } from '../useAccount';
@@ -12,7 +12,7 @@ const ManageEmail = props => {
     const [userEmail, setUserEmail] = useState('');
     const { userConfig } = useContext(UserContext);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { IsEmailConfirmed, SendEmailVerification, ChangeEmail } = useAccount();
 
     const initModel = {
@@ -28,7 +28,7 @@ const ManageEmail = props => {
         ChangeEmail(emailForm.model)
             .then(resp => {
                 if (!!resp && !!resp.status) {
-                    setMessage(resp.status, resp.alertColor);
+                    setStatus(resp.status, resp.alertColor);
                 }
                 else {
                     emailForm.handleErrors(resp);
@@ -43,7 +43,7 @@ const ManageEmail = props => {
         SendEmailVerification()
             .then(resp => {
                 if (!!resp && !!resp.status) {
-                    setMessage(resp.status, resp.alertColor);
+                    setStatus(resp.status, resp.alertColor);
                 }                
             });
     };
@@ -72,7 +72,7 @@ const ManageEmail = props => {
     return (
         <>
             <h4>Manage Email</h4>
-            <StatusMessage connector={statMsgConnector}/>
+            <Status />
             <Row>
                 <Col md={6}>
                     <Form onSubmit={handleSubmit}>

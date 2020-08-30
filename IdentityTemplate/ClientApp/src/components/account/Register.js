@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
-import { StatusMessage, useStatusMessage } from './statusMessage';
+import { useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -14,7 +14,7 @@ const Register = props => {
 
     const [externalLogins, setExternalLogins] = useState([]);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { GetExternalLogins, Register } = useAccount();
         
     const initModel = {
@@ -48,7 +48,7 @@ const Register = props => {
     useEffect(() => {
 
         if (!!registerForm.errors.ModelErrors) {
-            setMessage(registerForm.errors.ModelErrors, 'danger');
+            setStatus(registerForm.errors.ModelErrors, 'danger');
         }
 
     }, [registerForm.errors.ModelErrors]);
@@ -70,7 +70,7 @@ const Register = props => {
     return (
         <>
             <h1>Register</h1>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
 
             <Row>
                 <Col md={4}>

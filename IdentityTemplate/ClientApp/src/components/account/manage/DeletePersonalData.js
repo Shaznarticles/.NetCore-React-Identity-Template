@@ -2,7 +2,7 @@
 import { useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, FormGroup, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 import UserContext from '../../../auth/user';
 import { useAccount } from '../useAccount';
 
@@ -13,7 +13,7 @@ const DeletePersonalData = props => {
     const [requirePassword, setRequirePassword] = useState(true);
     const { getSignedInUser } = useContext(UserContext);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { HasPassword, DeletePersonalData } = useAccount();
 
     const initModel = {
@@ -51,7 +51,7 @@ const DeletePersonalData = props => {
     useEffect(() => {
 
         if (!!pDataForm.errors.ModelErrors) {
-            setMessage(pDataForm.errors.ModelErrors, 'danger');
+            setStatus(pDataForm.errors.ModelErrors, 'danger');
         }
 
     }, [pDataForm.errors.ModelErrors]);
@@ -59,7 +59,7 @@ const DeletePersonalData = props => {
     return (
         <>
             <h4>Delete Personal Data</h4>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
 
             <div className="alert alert-warning" role="alert">
                 <p>

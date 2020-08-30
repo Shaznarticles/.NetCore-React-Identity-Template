@@ -2,7 +2,7 @@
 import { useHistory } from 'react-router-dom';
 import { Row, Col, Form, FormGroup, Label, Input, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
-import { StatusMessage, useStatusMessage } from './statusMessage';
+import { useStatusMessage } from './statusMessage';
 import { useAccount } from './useAccount';
 
 const getQueryObject = () => {
@@ -24,7 +24,7 @@ const ResetPassword = props => {
 
     const code = getQueryObject().code;
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { ResetPassword } = useAccount();
         
     const initModel = {
@@ -54,7 +54,7 @@ const ResetPassword = props => {
     useEffect(() => {
 
         if (!!pwForm.errors.ModelErrors) {
-            setMessage(pwForm.errors.ModelErrors, 'danger');
+            setStatus(pwForm.errors.ModelErrors, 'danger');
         }
 
     }, [pwForm.errors.ModelErrors]);
@@ -62,7 +62,7 @@ const ResetPassword = props => {
     return (
         <>
             <h1>Reset Password</h1>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
             <h4>Reset your password.</h4>
             <hr />
             <Row>

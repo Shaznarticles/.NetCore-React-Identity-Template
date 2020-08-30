@@ -1,12 +1,12 @@
 ﻿import React from 'react';
 import { Form, Button, FormGroup } from 'reactstrap';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 
 const ExternalLogins = props => {
 
     const { currentLogins, showRemoveButton, otherLogins } = props;
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
 
     const removeProvider = (provider, pkey) => {
 
@@ -18,7 +18,7 @@ const ExternalLogins = props => {
 
     return (
         <>
-            <StatusMessage conncetor={statMsgConnector} />
+            <Status />
             {(currentLogins && currentLogins.length > 0) && (
                 <>
                 <h4>Registered Logins</h4>

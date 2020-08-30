@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 import { Link, useLocation } from 'react-router-dom';
 import { Button, FormGroup } from 'reactstrap';
 import { useAccount } from '../useAccount';
@@ -65,13 +65,13 @@ const TwoFactorAuthentication = props => {
 
     const { TwoFactorEnabled, HasAuthenticator, IsMachineRemembered, ForgetBrowser } = useAccount();
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
 
     const forgetBrowser = () => {
         ForgetBrowser()
             .then(resp => {
                 if (!!resp && !!resp.status) {
-                    setMessage(resp.status, resp.alertColor, 10000);
+                    setStatus(resp.status, resp.alertColor, 10000);
                 }                
             });
     };
@@ -80,7 +80,7 @@ const TwoFactorAuthentication = props => {
 
         const status = (!!location.state && location.state.status) || null;
         if (!!status) {
-            setMessage(status.status, status.alertColor, 10000);
+            setStatus(status.status, status.alertColor, 10000);
         }
 
         TwoFactorEnabled()
@@ -102,7 +102,7 @@ const TwoFactorAuthentication = props => {
 
     return (
         <>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
             <h4>Two-factor authentication (2FA)</h4>
             {is2faEnabled && (
                 <>

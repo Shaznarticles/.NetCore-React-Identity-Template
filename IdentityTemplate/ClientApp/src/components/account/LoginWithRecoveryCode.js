@@ -2,7 +2,7 @@
 import { useLocation, useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import UserContext from '../../auth/user';
-import { StatusMessage, useStatusMessage } from './statusMessage';
+import { useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -16,7 +16,7 @@ const LoginWithRecoveryCode = props => {
 
     const { getSignedInUser } = useContext(UserContext);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { LoginWithRecoveryCode } = useAccount();
 
     const initModel = {
@@ -46,7 +46,7 @@ const LoginWithRecoveryCode = props => {
     useEffect(() => {
 
         if (!!loginForm.errors.ModelErrors) {
-            setMessage(loginForm.errors.ModelErrors, 'danger');
+            setStatus(loginForm.errors.ModelErrors, 'danger');
         }
 
     }, [loginForm.errors.ModelErrors]);
@@ -54,7 +54,7 @@ const LoginWithRecoveryCode = props => {
     return (
         <>
             <h1>Recovery Code Verification</h1>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
 
             <hr />
             <p>

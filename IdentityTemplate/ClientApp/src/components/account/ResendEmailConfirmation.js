@@ -1,13 +1,13 @@
 ﻿import React from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button, FormFeedback } from 'reactstrap';
 import { useForm } from '../../utils/useForm';
-import { StatusMessage, useStatusMessage } from './statusMessage';
+import { useStatusMessage } from './statusMessage';
 import { useAccount } from './useAccount';
 
 
 const ResendEmailConfirmation = props => {
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { ResendEmailConfirmation } = useAccount();
 
     const initModel = {
@@ -23,7 +23,7 @@ const ResendEmailConfirmation = props => {
         ResendEmailConfirmation(emailForm.model)
             .then(resp => {
                 if (!!resp && !!resp.status) {
-                    setMessage(resp.status, resp.alertColor);
+                    setStatus(resp.status, resp.alertColor);
                 }
                 else {
                     emailForm.handleErrors(resp);
@@ -34,7 +34,7 @@ const ResendEmailConfirmation = props => {
     return (
         <>
             <h1>Resend Email Confirmation</h1>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
             <h4>Enter your email.</h4>
             <hr />
             <Row>

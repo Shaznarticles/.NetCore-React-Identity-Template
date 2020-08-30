@@ -1,12 +1,12 @@
 ﻿import React, { useEffect } from 'react';
 import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import { useForm } from '../../../utils/useForm';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 import { useAccount } from '../useAccount';
 
 const ChangePassword = props => {
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { ChangePassword } = useAccount();
 
     const initModel = {
@@ -26,7 +26,7 @@ const ChangePassword = props => {
             ChangePassword(pwForm.model)
                 .then(resp => {
                     if (!!resp && !!resp.status) {
-                        setMessage(resp.status, resp.alertColor);
+                        setStatus(resp.status, resp.alertColor);
                     }
                     else {
                         pwForm.handleErrors(resp);
@@ -34,14 +34,14 @@ const ChangePassword = props => {
                 });
         }
         else {
-            setMessage('New Password and Confirm Password do not match.', 'danger');
+            setStatus('New Password and Confirm Password do not match.', 'danger');
         }
     };
 
     useEffect(() => {
 
         if (!!pwForm.errors.ModelErrors) {
-            setMessage(pwForm.errors.ModelErrors, 'danger');
+            setStatus(pwForm.errors.ModelErrors, 'danger');
         }
 
     }, [pwForm.errors.ModelErrors]);
@@ -49,7 +49,7 @@ const ChangePassword = props => {
     return (
         <>
             <h4>Change password</h4>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
             <Row>
                 <Col md={6}>
                     <Form onSubmit={handleSubmit}>

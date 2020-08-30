@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
-import { StatusMessage, useStatusMessage } from '../statusMessage';
+import { useStatusMessage } from '../statusMessage';
 
 const ShowRecoveryCodes = props => {
 
@@ -9,7 +9,7 @@ const ShowRecoveryCodes = props => {
 
     const [recoveryCodes, setRecoveryCodes] = useState([]);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
 
     useEffect(() => {
 
@@ -17,7 +17,7 @@ const ShowRecoveryCodes = props => {
         const codes = (!!location.state && location.state.recoveryCodes) || null;
 
         if (!!status) {
-            setMessage(status.status, status.alertColor, 10000);
+            setStatus(status.status, status.alertColor, 10000);
         }
 
         if (!codes) {
@@ -28,7 +28,7 @@ const ShowRecoveryCodes = props => {
 
     return (
         <>
-            <StatusMessage connector={statMsgConnector}/>
+            <Status />
             <h4>Recovery Codes</h4>
             <div className="alert alert-warning" role="alert">
                 <p>

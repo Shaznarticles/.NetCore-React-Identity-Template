@@ -2,7 +2,7 @@
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { Label, Button, Input, Form, Row, Col, FormGroup, FormFeedback } from 'reactstrap';
 import UserContext from '../../auth/user';
-import { StatusMessage, useStatusMessage } from './statusMessage';
+import { useStatusMessage } from './statusMessage';
 import { useForm } from '../../utils/useForm';
 import { useAccount } from './useAccount';
 
@@ -16,7 +16,7 @@ const Login = props => {
     const [externalLogins, setExternalLogins] = useState([]);
     const { getSignedInUser } = useContext(UserContext);
 
-    const [setMessage, statMsgConnector] = useStatusMessage();
+    const [Status, setStatus] = useStatusMessage();
     const { GetExternalLogins, Login } = useAccount();
 
     const initModel = {
@@ -53,7 +53,7 @@ const Login = props => {
     useEffect(() => {
 
         if (!!loginForm.errors.ModelErrors) {
-            setMessage(loginForm.errors.ModelErrors, 'danger');
+            setStatus(loginForm.errors.ModelErrors, 'danger');
         }
 
     }, [loginForm.errors.ModelErrors]);
@@ -75,7 +75,7 @@ const Login = props => {
     return (
         <>
             <h1>Log In</h1>
-            <StatusMessage connector={statMsgConnector} />
+            <Status />
             <Row>
                 <Col md={4}>
                     <section>
